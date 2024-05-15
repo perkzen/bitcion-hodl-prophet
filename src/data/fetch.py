@@ -9,22 +9,35 @@ def main():
 
     parser = argparse.ArgumentParser(description="Download historical data for BTC-USD.")
 
-    parser.add_argument("--period", type=str, default="1d",
-                        help="The period of the data (e.g., '1d', '5d', '1mo', '1y').")
-    parser.add_argument("--interval", type=str, default="1h",
-                        help="The interval of the data (e.g., '1m', '5m', '15m', '1h', '1d').")
+    parser.add_argument("--type", type=str, default="hourly",
+                        help="Interval to download data for. Options: hourly, daily")
 
     args = parser.parse_args()
 
-    logger.info(f"Arguments received - Period: {args.period}, Interval: {args.interval}")
+    valid_intervals = {"hourly", "daily"}
+    if args.type not in valid_intervals:
+        parser.error(f"Invalid type '{args.type}'. Valid options are: {', '.join(valid_intervals)}")
+
+    logger.info(f"Arguments received - interval: {args.type}")
+
+    intervals = {
+        "hourly": {
+            "period": "2y",
+            "interval": "1h"
+        },
+        "daily": {
+            "period": "max",
+            "interval": "1d"
+        }
+    }
 
     logger.info("Downloading historical data for BTC-USD.")
 
     btc = yf.Ticker("BTC-USD")
 
-    btc_hist = btc.history(period=args.period, interval=args.interval)
+    btc_hist = btc.history(period=intervals[args.type]["period"], interval=intervals[args.type]["interval"])
 
-    btc_hist.to_csv("data/raw/btc.csv")
+    btc_hist.to_csv(f"data/raw/btc_price_{args.type}.csv")
 
 
 if __name__ == "__main__":
