@@ -51,11 +51,11 @@ jobs:
 
       - name: Fetch hourly BTC data
         run: |
-          poe fetch --type hourly
+          poetry run poe fetch --type hourly
 
       - name: Fetch daily BTC data
         run: |
-          poe fetch --type daily
+          poetry run poe fetch --type daily
 
       - name: Commit changes to DVC
         run: |
@@ -116,11 +116,11 @@ jobs:
 
       - name: Process hourly BTC data
         run: |
-          poe process --input btc_price_hourly.csv 
+          poetry run poe process --input btc_price_hourly.csv 
 
       - name: Process daily BTC data
         run: |
-          poe process --input btc_price_daily.csv
+          poetry run poe process --input btc_price_daily.csv
 
       - name: Commit changes to DVC
         run: |
