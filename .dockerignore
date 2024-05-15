@@ -1,0 +1,16 @@
+data/
+models/
+notebooks/
+reports/
+src/client
+src/data
+src/models
+src/visualization
+
+LICENSE
+README.md
+
+Dockerfile
+.dockerignore
+
+.gitignore
