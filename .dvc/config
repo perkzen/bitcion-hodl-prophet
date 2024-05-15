@@ -1,3 +1,6 @@
+[core]
+    remote = origin
+    autostage = true
 ['remote "origin"']
     url = s3://dvc
     endpointurl = https://dagshub.com/perkzen/bitcoin-hodl-prophet.s3
