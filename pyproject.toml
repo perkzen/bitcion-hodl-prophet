@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "bitcion-hodl-prophet"
+name = "bitcoin-hodl-prophet"
 version = "0.1.0"
 description = ""
 authors = ["perkzen <perko.domen@gmail.com>"]
