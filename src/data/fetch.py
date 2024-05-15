@@ -12,11 +12,11 @@ class Type(Enum):
 valid_intervals = {Type.HOURLY.value, Type.DAILY.value}
 
 options = {
-    Type.HOURLY: {
+    Type.HOURLY.value: {
         "period": "2y",
         "interval": "1h"
     },
-    Type.DAILY: {
+    Type.DAILY.value: {
         "period": "max",
         "interval": "1d"
     }
