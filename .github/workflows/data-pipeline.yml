@@ -124,7 +124,7 @@ jobs:
 
       - name: Commit changes to DVC
         run: |
-          dvc add data/process/*.csv
+          dvc add data/processed/*.csv
           dvc push -r origin
 
       - name: Commit changes to GIT
