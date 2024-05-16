@@ -8,7 +8,7 @@ from src.utils.logger import get_logger
 
 def create_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description='Kolmogorov-Smirnov test')
-    parser.add_argument('--current', type=str, required=True, help='Path to current file')
+    parser.add_argument('--current', type=str, required=True, help='Path to current data file')
     parser.add_argument('--reference', type=str, required=True, help='Path to reference data file')
     parser.add_argument('--alpha', type=float, default=0.05, help='Significance level')
 
