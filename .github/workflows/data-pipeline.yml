@@ -137,6 +137,11 @@ jobs:
           git add .
           git commit -m "action: process btc data"
 
+      - name: Pull changes
+        run: |
+          git config --global pull.rebase false
+          git pull --strategy=recursive -Xtheirs origin ${{ github.ref }}
+
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
