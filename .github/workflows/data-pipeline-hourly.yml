@@ -143,6 +143,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - env:
+          SHA_FETCH: ${{ needs.fetch.outputs.sha_fetch }}
+        run: |
+          echo "$SHA_FETCH" 
+
       - uses: actions/checkout@v4
         with:
           ref: ${{ needs.process.outputs.sha_process }}
