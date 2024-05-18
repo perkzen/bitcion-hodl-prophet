@@ -4,7 +4,7 @@ notebooks/
 reports/
 src/client
 src/data
-src/models
+src/model
 src/visualization
 
 LICENSE
