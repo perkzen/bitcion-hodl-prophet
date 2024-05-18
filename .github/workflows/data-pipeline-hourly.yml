@@ -1,0 +1,141 @@
+name: Hourly Data Pipeline
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+env:
+  DVC_ACCESS_KEY_ID: ${{ secrets.DVC_ACCESS_KEY_ID }}
+  DVC_SECRET_ACCESS_KEY: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
+
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: poetry
+
+      - name: Install dependencies
+        run: |
+          poetry install --no-interaction --no-root
+
+      - name: Install DVC
+        uses: iterative/setup-dvc@v1
+
+      - name: Configure GIT
+        run: |
+          git config --global user.email "perko.domen@gmail.com"
+          git config --global user.name "perkzen"
+
+      - name: Configure DVC
+        run: |
+          dvc remote modify origin --local access_key_id $DVC_ACCESS_KEY_ID
+          dvc remote modify origin --local secret_access_key $DVC_SECRET_ACCESS_KEY
+
+      - name: DVC pull
+        run: |
+          dvc pull -r origin --force
+
+      - name: Fetch hourly BTC data
+        run: |
+          poetry run poe fetch --type hourly
+
+      - name: Commit changes to DVC
+        run: |
+          dvc add data/raw/*.csv
+          dvc push -r origin
+
+      - name: Commit changes to GIT
+        run: |
+          git add .
+          git commit -m "action: fetch btc data"
+
+      - name: Pull changes
+        run: |
+          git config --global pull.rebase false
+          git pull --strategy=recursive -Xtheirs origin ${{ github.ref }}
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+
+  process:
+    needs:
+      - fetch
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: poetry
+
+      - name: Install dependencies
+        run: |
+          poetry install --no-interaction --no-root
+
+      - name: Install DVC
+        uses: iterative/setup-dvc@v1
+
+      - name: Configure GIT
+        run: |
+          git config --global user.email "perko.domen@gmail.com"
+          git config --global user.name "perkzen"
+
+      - name: Configure DVC
+        run: |
+          dvc remote modify origin --local access_key_id $DVC_ACCESS_KEY_ID
+          dvc remote modify origin --local secret_access_key $DVC_SECRET_ACCESS_KEY
+
+      - name: DVC pull
+        run: |
+          dvc pull -r origin --force
+
+      - name: Process hourly BTC data
+        run: |
+          poetry run poe process --input btc_price_hourly.csv 
+
+      - name: Commit changes to DVC
+        run: |
+          dvc add data/processed/*.csv
+          dvc push -r origin
+
+      - name: Commit changes to GIT
+        run: |
+          git add .
+          git commit -m "action: process btc data"
+
+      - name: Pull changes
+        run: |
+          git config --global pull.rebase false
+          git pull --strategy=recursive -Xtheirs origin ${{ github.ref }}
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}

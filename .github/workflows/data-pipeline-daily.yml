@@ -1,10 +1,9 @@
-name: Data Pipeline
+name: Daily Data Pipeline
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 0 * * *'
   workflow_dispatch:
-
 env:
   DVC_ACCESS_KEY_ID: ${{ secrets.DVC_ACCESS_KEY_ID }}
   DVC_SECRET_ACCESS_KEY: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
@@ -50,10 +49,6 @@ jobs:
           dvc pull -r origin --force
 
       - name: Fetch hourly BTC data
-        run: |
-          poetry run poe fetch --type hourly
-
-      - name: Fetch daily BTC data
         run: |
           poetry run poe fetch --type daily
 
@@ -121,11 +116,7 @@ jobs:
 
       - name: Process hourly BTC data
         run: |
-          poetry run poe process --input btc_price_hourly.csv 
-
-      - name: Process daily BTC data
-        run: |
-          poetry run poe process --input btc_price_daily.csv
+          poetry run poe process --input btc_price_daily.csv 
 
       - name: Commit changes to DVC
         run: |
