@@ -74,8 +74,7 @@ jobs:
           branch: ${{ github.ref }}
 
   process:
-    needs:
-      - fetch
+    needs: fetch
 
     runs-on: ubuntu-latest
 
@@ -138,9 +137,16 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
+
   validate:
     needs: process
     runs-on: ubuntu-latest
+
+    outputs:
+      sha_fetch: ${{ steps.fetch.outputs.SHA_FETCH }}
+
+    permissions:
+      contents: write
 
     steps:
       - env:

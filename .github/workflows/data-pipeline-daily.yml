@@ -162,6 +162,12 @@ jobs:
     needs: process
     runs-on: ubuntu-latest
 
+    outputs:
+      sha_fetch: ${{ steps.fetch.outputs.SHA_FETCH }}
+
+    permissions:
+      contents: write
+
     steps:
       - env:
           SHA_FETCH: ${{ needs.fetch.outputs.sha_fetch }}
