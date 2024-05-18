@@ -66,7 +66,7 @@ jobs:
       - name: Commit changes to GIT
         run: |
           git add .
-          git commit -m "action: fetch btc data"
+          git commit -m "action: fetch btc data" --allow-empty
 
       - name: Pull changes
         run: |
@@ -141,7 +141,7 @@ jobs:
       - name: Commit changes to GIT
         run: |
           git add .
-          git commit -m "action: process btc data"
+          git commit -m "action: process btc data" --allow-empty
 
       - name: Pull changes
         run: |
