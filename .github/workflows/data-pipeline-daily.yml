@@ -209,8 +209,8 @@ jobs:
 
       - name: Validate BTC data
         run: |
-          poetry run poe validate --current data/processed/btc_price_daily.csv --reference data/processed/reference_data.csv
+          poetry run poe validate --current btc_price_daily.csv --reference reference_data.csv
 
       - name: Kolmogorov-Smirnov test
         run: |
-          poetry run poe ks-test --current data/processed/btc_price_daily.csv --reference data/processed/reference_data.csv
+          poetry run poe ks-test --current btc_price_daily.csv --reference reference_data.csv
