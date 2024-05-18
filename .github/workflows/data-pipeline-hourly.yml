@@ -9,7 +9,6 @@ env:
   DVC_ACCESS_KEY_ID: ${{ secrets.DVC_ACCESS_KEY_ID }}
   DVC_SECRET_ACCESS_KEY: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
 
-
 jobs:
   fetch:
     runs-on: ubuntu-latest
@@ -139,3 +138,54 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
+  validate:
+    needs: process
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.process.outputs.sha_process }}
+          fetch-depth: 0
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: poetry
+
+      - name: Install dependencies
+        run: |
+          poetry install --no-interaction --no-root
+
+      - name: Install DVC
+        uses: iterative/setup-dvc@v1
+
+      - name: Configure GIT
+        run: |
+          git config --global user.email "perko.domen@gmail.com"
+          git config --global user.name "perkzen"
+
+      - name: Configure DVC
+        run: |
+          dvc remote modify origin --local access_key_id $DVC_ACCESS_KEY_ID
+          dvc remote modify origin --local secret_access_key $DVC_SECRET_ACCESS_KEY
+
+      - name: DVC pull
+        run: |
+          dvc pull -r origin --force
+
+      - name: Get reference data
+        run: |
+          dvc get . data/processed/btc_price_hourly.csv --rev ${{ needs.fetch.outputs.sha_fetch }} --out data/processed/reference_data.csv --force
+
+      - name: Validate BTC data
+        run: |
+          poetry run poe validate --current data/processed/btc_price_hourly.csv --reference data/processed/reference_data.csv
+
+      - name: Kolmogorov-Smirnov test
+        run: |
+          poetry run poe ks-test --current data/processed/btc_price_hourly.csv --reference data/processed/reference_data.csv
