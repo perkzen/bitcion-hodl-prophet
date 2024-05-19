@@ -1,4 +1,6 @@
 from typing import Callable, Tuple
+
+import joblib
 import numpy as np
 import pandas as pd
 import tensorflow_model_optimization as tfmot
@@ -101,7 +103,7 @@ def predict(model: ort.InferenceSession, data: np.ndarray) -> np.ndarray:
     return model.run(["output"], {"input": data})[0]
 
 
-def inverse_transform(data: np.ndarray, num_of_features: int, scaler: joblib.load) -> np.ndarray:
+def inverse_transform(data: np.ndarray, num_of_features: int, scaler: MinMaxScaler) -> np.ndarray:
     data_copy = np.repeat(data, num_of_features, axis=-1)
     return scaler.inverse_transform(np.reshape(data_copy, (len(data), num_of_features)))[:, 0]
 

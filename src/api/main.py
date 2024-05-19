@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.responses import RedirectResponse
+from .routers import predict_router
 
 app = FastAPI()
 
@@ -13,7 +15,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(predict_router)
+
 
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
+def root():
+    return RedirectResponse(url="/docs")

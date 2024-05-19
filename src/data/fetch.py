@@ -1,23 +1,17 @@
 import argparse
 import pandas as pd
 import yfinance as yf
-from enum import Enum
+from src.utils.data import DataType
 from src.utils.logger import get_logger
 
-
-class Type(Enum):
-    HOURLY = "hourly"
-    DAILY = "daily"
-
-
-valid_intervals = {Type.HOURLY.value, Type.DAILY.value}
+valid_intervals = {DataType.HOURLY.value, DataType.DAILY.value}
 
 options = {
-    Type.HOURLY.value: {
+    DataType.HOURLY.value: {
         "period": "1d",
         "interval": "1h"
     },
-    Type.DAILY.value: {
+    DataType.DAILY.value: {
         "period": "1d",
         "interval": "1d"
     }
