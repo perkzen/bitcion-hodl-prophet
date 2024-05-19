@@ -12,16 +12,24 @@ quantize_layer = tfmot.quantization.keras.quantize_annotate_layer
 def build_model(input_shape: tuple[int, int]) -> keras.Sequential:
     model = keras.Sequential(name="model")
 
-    model.add(keras.layers.LSTM(128, activation='relu', input_shape=input_shape, return_sequences=True))
-    model.add(quantize_layer(keras.layers.Dropout(0.2)))
+    model.add(keras.layers.GRU(128, activation='relu', input_shape=input_shape, return_sequences=True))
+    model.add(tfmot.quantization.keras.quantize_annotate_layer(keras.layers.Dropout(0.2)))
 
-    model.add((keras.layers.LSTM(64, activation='relu', return_sequences=True)))
-    model.add(quantize_layer(keras.layers.Dropout(0.2)))
+    model.add(keras.layers.GRU(64, activation='relu', return_sequences=True))
+    model.add(tfmot.quantization.keras.quantize_annotate_layer(keras.layers.Dropout(0.2)))
 
-    model.add((keras.layers.LSTM(32, activation='relu')))
+    model.add(keras.layers.GRU(32, activation='relu', return_sequences=True))
+    model.add(tfmot.quantization.keras.quantize_annotate_layer(keras.layers.Dropout(0.2)))
 
-    model.add(quantize_layer(keras.layers.Dense(units=32, activation="relu")))
-    model.add(quantize_layer((keras.layers.Dense(1))))
+    model.add(keras.layers.GRU(32, activation='relu'))
+
+    model.add(tfmot.quantization.keras.quantize_annotate_layer(keras.layers.Dense(64, activation='relu')))
+    model.add(tfmot.quantization.keras.quantize_annotate_layer(keras.layers.Dropout(0.2)))
+
+    model.add(tfmot.quantization.keras.quantize_annotate_layer(keras.layers.Dense(32, activation='relu')))
+    model.add(tfmot.quantization.keras.quantize_annotate_layer(keras.layers.Dropout(0.2)))
+
+    model.add(tfmot.quantization.keras.quantize_annotate_layer(keras.layers.Dense(1)))
 
     model = tfmot.quantization.keras.quantize_apply(
         model,
@@ -29,7 +37,7 @@ def build_model(input_shape: tuple[int, int]) -> keras.Sequential:
         quantized_layer_name_prefix='quant_'
     )
 
-    model.compile(optimizer="adam", loss="mean_squared_logarithmic_error")
+    model.compile(optimizer="adam", loss="mean_squared_error")
 
     return model
 
@@ -55,7 +63,7 @@ def create_time_series(data, n_past, target_col=0, feature_cols=None):
     return np.array(X), np.array(y)
 
 
-def create_test_train_split(data: pd.DataFrame, split_size=0.1) -> tuple[np.ndarray, np.ndarray]:
+def create_test_train_split(data: pd.DataFrame, split_size=0.3) -> tuple[np.ndarray, np.ndarray]:
     items = int(len(data) * split_size)
     test_data = data.iloc[-items:]
     train_data = data.iloc[:-items]

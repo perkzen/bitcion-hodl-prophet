@@ -13,6 +13,7 @@ ks-test = "python -m src.data.ks_test"
 validate = "python -m src.data.validate_data"
 train = "python -m src.model.train_model"
 eval = "python -m src.model.eval_model"
+plot = "python -m src.vizualization.plot_data"
 
 [tool.poetry.dependencies]
 python = "^3.12"
