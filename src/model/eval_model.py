@@ -1,39 +1,43 @@
-import joblib
-import numpy as np
-import onnxruntime as ort
-import pandas as pd
-from sklearn.metrics import mean_squared_error, mean_absolute_error, explained_variance_score
+import argparse
+import os
 
-from src.model.helpers import prepare_data
+import joblib
+import pandas as pd
+from src.model.helpers import prepare_data, load_model, predict, inverse_transform, evaluate_model_performance
+from src.utils.logger import get_logger
 from src.vizualization.helpers import plot_predictions
 
 
-def load_model(path: str) -> ort.InferenceSession:
-    return ort.InferenceSession(path)
+def create_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Evaluate the model to predict the price of Bitcoin")
+    parser.add_argument("--type", required=True, type=str, help="model type (daily or hourly)")
+    return parser
 
 
-def predict(model: ort.InferenceSession, data: np.ndarray) -> np.ndarray:
-    return model.run(["output"], {"input": data})[0]
+def valid_args(args) -> bool:
+    files = os.listdir("models")
 
-
-def inverse_transform(data: np.ndarray, num_of_features: int, scaler: joblib.load) -> np.ndarray:
-    data_copy = np.repeat(data, num_of_features, axis=-1)
-    return scaler.inverse_transform(np.reshape(data_copy, (len(data), num_of_features)))[:, 0]
-
-
-def evaluate_model_performance(y_true, y_pred) -> dict[str, float]:
-    mse = mean_squared_error(y_true, y_pred)
-    mae = mean_absolute_error(y_true, y_pred)
-    evs = explained_variance_score(y_true, y_pred)
-
-    return {"mse": mse, "mae": mae, "evs": evs}
+    if args.type not in files:
+        return False
+    return True
 
 
 def main() -> None:
-    model = load_model("models/model.onnx")
-    minmax = joblib.load("models/minmax.pkl")
+    logger = get_logger()
+    parser = create_parser()
 
-    btc_hist = pd.read_csv("data/processed/btc_price_daily.csv", index_col=0, parse_dates=True)
+    args = parser.parse_args()
+
+    is_valid = valid_args(args)
+    if not is_valid:
+        parser.error(f"Invalid input '{args.type}'. Valid options are: {', '.join(os.listdir('models'))}")
+
+    logger.info(f"Evaluating {args.type} model")
+
+    model = load_model(f"models/{args.type}/model.onnx")
+    minmax = joblib.load(f"models/{args.type}/minmax.pkl")
+
+    btc_hist = pd.read_csv(f"data/processed/btc_price_{args.type}.csv", index_col=0, parse_dates=True)
 
     _, _, X_test, y_test = prepare_data(minmax, btc_hist)
 
@@ -45,7 +49,7 @@ def main() -> None:
     dates = btc_hist.index.values
     df_output = pd.DataFrame({"Date": dates[-len(y_true):], 'Actual': y_true, 'Predicted': y_pred})
 
-    plot_predictions(df_output, output_file="reports/figures/predictions.png")
+    plot_predictions(df_output, output_file=f"reports/figures/predictions_{args.type}.png")
 
     print(evaluate_model_performance(y_true, y_pred))
 
