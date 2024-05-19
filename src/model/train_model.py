@@ -23,7 +23,9 @@ def main() -> None:
     onnx_model, _ = tf2onnx.convert.from_keras(model=model, input_signature=input_signature, opset=13)
 
     joblib.dump(minmax, "models/minmax.pkl")
-    joblib.dump(model, "models/model.onnx")
+
+    with open("models/model.onnx", "wb") as f:
+        f.write(onnx_model.SerializeToString())
 
 
 if __name__ == '__main__':

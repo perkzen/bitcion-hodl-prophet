@@ -10,11 +10,15 @@ quantize_layer = tfmot.quantization.keras.quantize_annotate_layer
 
 
 def build_model(input_shape: tuple[int, int]) -> keras.Sequential:
-    model = keras.Sequential()
+    model = keras.Sequential(name="model")
 
-    model.add(keras.layers.LSTM(50, activation='relu', input_shape=input_shape, return_sequences=True))
+    model.add(keras.layers.LSTM(128, activation='relu', input_shape=input_shape, return_sequences=True))
     model.add(quantize_layer(keras.layers.Dropout(0.2)))
-    model.add((keras.layers.LSTM(50, activation='relu')))
+
+    model.add((keras.layers.LSTM(64, activation='relu', return_sequences=True)))
+    model.add(quantize_layer(keras.layers.Dropout(0.2)))
+
+    model.add((keras.layers.LSTM(32, activation='relu')))
 
     model.add(quantize_layer(keras.layers.Dense(units=32, activation="relu")))
     model.add(quantize_layer((keras.layers.Dense(1))))
