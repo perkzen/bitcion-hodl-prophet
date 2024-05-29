@@ -16,31 +16,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(predict_router)
-
-
-def create_server_config():
-    server_config = uvicorn.Config(
-        app="src.api.main:app",
-        host="0.0.0.0",  # docker needs to have 0.0.0.0
-        port=8000,
-        reload=True,
-        access_log=True,
-        workers=1
-    )
-
-    return server_config
-
-
-def run_server() -> None:
-    server_config = create_server_config()
-    server = uvicorn.Server(server_config)
-    server.run()
-
 
 @app.get("/")
 def root():
     return RedirectResponse(url="/docs")
+
+
+app.include_router(predict_router)
+
+
+def run_server() -> None:
+    uvicorn.run(app="src.api.main:app", host="0.0.0.0", port=8000, reload=True, access_log=True)
 
 
 if __name__ == "__main__":
