@@ -22,11 +22,10 @@ app.include_router(predict_router)
 def create_server_config():
     server_config = uvicorn.Config(
         app="src.api.main:app",
-        host="127.0.0.1",  # docker needs to have 0.0.0.0
+        host="0.0.0.0",  # docker needs to have 0.0.0.0
         port=8000,
         reload=True,
         access_log=True,
-        # log_config= None
         workers=1
     )
 

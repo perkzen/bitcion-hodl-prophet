@@ -1,17 +1,14 @@
 import joblib
-import pandas as pd
-
 from src.model.helpers import load_model, predict, create_time_series, inverse_transform
 from src.utils.data import DataType
+from src.api.services import btc_service
 
 
 def forecast(data_type: DataType):
     model = load_model(f"models/{data_type.value}/model.onnx")
     minmax = joblib.load(f"models/{data_type.value}/minmax.pkl")
 
-    btc_hist = pd.read_csv(f"data/processed/btc_price_{data_type.value}.csv", index_col=0, parse_dates=True)
-
-    btc_hist = btc_hist.iloc[-25:]
+    btc_hist = btc_service.get_last_n_entries(25, data_type)
 
     target = "Close"
     features = list(btc_hist.columns)

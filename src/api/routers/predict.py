@@ -12,5 +12,4 @@ router = APIRouter(
 @router.get("/{data_type}")
 def predict(data_type: DataType):
     prediction = ml_service.forecast(data_type)
-
     return {"prediction": float(prediction)}

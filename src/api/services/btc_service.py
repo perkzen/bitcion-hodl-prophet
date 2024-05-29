@@ -20,4 +20,5 @@ options = {
 def get_last_n_entries(n: int, data_type: DataType) -> pd.DataFrame:
     btc_hist = yf.download("BTC-USD", period=options[data_type.value]["period"],
                            interval=options[data_type.value]["interval"])
+    btc_hist.drop(columns=["Adj Close"], inplace=True)
     return btc_hist.tail(n)
