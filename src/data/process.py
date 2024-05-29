@@ -1,7 +1,6 @@
 import argparse
 import os
 import pandas as pd
-
 from src.utils.logger import get_logger
 
 
@@ -25,6 +24,7 @@ def main() -> None:
     logger = get_logger()
     parser = create_parser()
     args = parser.parse_args()
+    ROWS = 1000
 
     is_valid = valid_args(args)
     if not is_valid:
@@ -36,6 +36,9 @@ def main() -> None:
 
     # Dividends and Stock Splits are not relevant for BTC
     btc_hist = btc_hist.drop(columns=["Dividends", "Stock Splits"])
+
+    # Only keep the last n rows
+    btc_hist = btc_hist.tail(ROWS)
 
     btc_hist.to_csv(f"data/processed/{args.input}")
 

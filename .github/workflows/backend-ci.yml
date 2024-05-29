@@ -1,0 +1,49 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/api/**'
+      - '.github/workflows/backend-ci.yml'
+      - 'Dockerfile'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/api/**'
+      - '.github/workflows/backend-ci.yml'
+      - 'Dockerfile'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: poetry
+
+      - name: Install dependencies
+        run: |
+          poetry install --no-interaction --no-root
+
+      - name: Run linter
+        run: |
+          poetry run poe lint
+        continue-on-error: false
+
+      - name: Run tests
+        run: |
+          poetry run poe test

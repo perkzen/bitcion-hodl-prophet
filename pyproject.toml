@@ -6,7 +6,7 @@ authors = ["perkzen <perko.domen@gmail.com>"]
 readme = "README.md"
 
 [tool.poe.tasks]
-serve = "uvicorn src.api.main:app --reload"
+serve = "python -m src.api.main"
 fetch = "python -m src.data.fetch"
 process = "python -m src.data.process"
 ks-test = "python -m src.data.ks_test"
@@ -14,6 +14,8 @@ validate = "python -m src.data.validate_data"
 train = "python -m src.model.train_model"
 eval = "python -m src.model.eval_model"
 plot = "python -m src.vizualization.plot_data"
+test = "pytest src/api"
+lint = "ruff check ."
 
 [tool.poetry.dependencies]
 python = "^3.12"

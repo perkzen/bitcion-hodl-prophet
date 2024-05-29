@@ -7,11 +7,11 @@ ticker = yf.Ticker("BTC-USD")
 
 options = {
     DataType.HOURLY.value: {
-        "period": "2d",
+        "period": "5d",
         "interval": "1h"
     },
     DataType.DAILY.value: {
-        "period": "30d",
+        "period": "1mo",
         "interval": "1d"
     }
 }

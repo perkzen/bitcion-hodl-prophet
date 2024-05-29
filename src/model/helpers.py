@@ -1,13 +1,11 @@
-from typing import Callable, Tuple
-
-import joblib
 import numpy as np
 import pandas as pd
 import tensorflow_model_optimization as tfmot
 import onnxruntime as ort
+import tf_keras as keras
+from typing import Callable, Tuple
 from sklearn.metrics import mean_squared_error, mean_absolute_error, explained_variance_score
 from sklearn.preprocessing import MinMaxScaler
-import tf_keras as keras
 from tensorflow_model_optimization.python.core.quantization.keras.default_8bit import default_8bit_quantize_scheme
 
 quantize_layer = tfmot.quantization.keras.quantize_annotate_layer
