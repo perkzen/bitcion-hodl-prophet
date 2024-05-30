@@ -42,6 +42,14 @@ def main() -> None:
 
     btc_hist.to_csv(f"data/processed/{args.input}")
 
+    # Process for classification
+    btc_hist["Tomorrow"] = btc_hist["Close"].shift(-1)
+    btc_hist["Target"] = (btc_hist["Tomorrow"] > btc_hist["Close"])
+    btc_hist["Target"] = btc_hist["Target"].astype(int)
+
+    btc_hist.to_csv(f"data/processed/{args.input.split('.')[0]}_classification.csv")
+    print(btc_hist["Target"].value_counts())
+
 
 if __name__ == "__main__":
     main()
