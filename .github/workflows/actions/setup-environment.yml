@@ -1,0 +1,43 @@
+name: Setup Environment
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: 'Python version to use'
+        required: true
+        type: string
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.python-version }}
+          cache: poetry
+
+      - name: Install Dependencies
+        run: poetry install --no-interaction --no-root
+
+      - name: Install DVC
+        uses: iterative/setup-dvc@v1
+
+      - name: Configure GIT
+        run: |
+          git config --global user.email "perko.domen@gmail.com"
+          git config --global user.name "perkzen"
+
+      - name: Configure DVC
+        run: |
+          dvc remote modify origin --local access_key_id ${{ secrets.DVC_ACCESS_KEY_ID }}
+          dvc remote modify origin --local secret_access_key ${{ secrets.DVC_SECRET_ACCESS_KEY }}
+
+      - name: DVC pull
+        run: |
+          dvc pull -r origin --force

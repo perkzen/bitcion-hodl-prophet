@@ -24,35 +24,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install Poetry
-        run: pipx install poetry
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Setup Environment
+        uses: ./.github/workflows/actions/setup-environment.yml
         with:
-          python-version: '3.12'
-          cache: poetry
-
-      - name: Install dependencies
-        run: |
-          poetry install --no-interaction --no-root
-
-      - name: Install DVC
-        uses: iterative/setup-dvc@v1
-
-      - name: Configure GIT
-        run: |
-          git config --global user.email "perko.domen@gmail.com"
-          git config --global user.name "perkzen"
-
-      - name: Configure DVC
-        run: |
-          dvc remote modify origin --local access_key_id $DVC_ACCESS_KEY_ID
-          dvc remote modify origin --local secret_access_key $DVC_SECRET_ACCESS_KEY
-
-      - name: DVC pull
-        run: |
-          dvc pull -r origin --force
+            python-version: '3.12'
 
       - name: Fetch hourly BTC data
         run: |
@@ -99,35 +74,10 @@ jobs:
           ref: ${{ needs.fetch.outputs.sha_fetch }}
           fetch-depth: 0
 
-      - name: Install Poetry
-        run: pipx install poetry
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Setup Environment
+        uses: ./.github/workflows/actions/setup-environment.yml
         with:
           python-version: '3.12'
-          cache: poetry
-
-      - name: Install dependencies
-        run: |
-          poetry install --no-interaction --no-root
-
-      - name: Install DVC
-        uses: iterative/setup-dvc@v1
-
-      - name: Configure GIT
-        run: |
-          git config --global user.email "perko.domen@gmail.com"
-          git config --global user.name "perkzen"
-
-      - name: Configure DVC
-        run: |
-          dvc remote modify origin --local access_key_id $DVC_ACCESS_KEY_ID
-          dvc remote modify origin --local secret_access_key $DVC_SECRET_ACCESS_KEY
-
-      - name: DVC pull
-        run: |
-          dvc pull -r origin --force
 
       - name: Process hourly BTC data
         run: |
@@ -179,35 +129,10 @@ jobs:
           ref: ${{ needs.process.outputs.sha_process }}
           fetch-depth: 0
 
-      - name: Install Poetry
-        run: pipx install poetry
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Setup Environment
+        uses: ./.github/workflows/actions/setup-environment.yml
         with:
           python-version: '3.12'
-          cache: poetry
-
-      - name: Install dependencies
-        run: |
-          poetry install --no-interaction --no-root
-
-      - name: Install DVC
-        uses: iterative/setup-dvc@v1
-
-      - name: Configure GIT
-        run: |
-          git config --global user.email "perko.domen@gmail.com"
-          git config --global user.name "perkzen"
-
-      - name: Configure DVC
-        run: |
-          dvc remote modify origin --local access_key_id $DVC_ACCESS_KEY_ID
-          dvc remote modify origin --local secret_access_key $DVC_SECRET_ACCESS_KEY
-
-      - name: DVC pull
-        run: |
-          dvc pull -r origin --force
 
       - name: Get reference data
         run: |
