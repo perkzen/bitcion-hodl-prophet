@@ -5,7 +5,6 @@ on:
     - cron: '0 0 * * *'
   workflow_dispatch:
 
-
 jobs:
   fetch:
     runs-on: ubuntu-latest
@@ -108,20 +107,17 @@ jobs:
         run: echo "SHA_PROCESS=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
   validate:
-    needs: process
+    needs:
+      - process
+      - fetch
+
     runs-on: ubuntu-latest
-
-    outputs:
-      sha_fetch: ${{ steps.fetch.outputs.SHA_FETCH }}
-
-    permissions:
-      contents: write
 
     steps:
       - env:
           SHA_FETCH: ${{ needs.fetch.outputs.sha_fetch }}
         run: |
-          echo "$SHA_FETCH"   
+          echo "SHA_FETCH: $SHA_FETCH"
 
       - uses: actions/checkout@v4
         with:
