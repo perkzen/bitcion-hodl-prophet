@@ -23,7 +23,7 @@ jobs:
 
       - name: Setup Environment
         uses: ./.github/actions/setup-environment
-        secrets:
+        with:
           dvc_access_key_id: ${{ secrets.DVC_ACCESS_KEY_ID }}
           dvc_secret_access_key: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
 
@@ -74,6 +74,9 @@ jobs:
 
       - name: Setup Environment
         uses: ./.github/actions/setup-environment
+        with:
+          dvc_access_key_id: ${{ secrets.DVC_ACCESS_KEY_ID }}
+          dvc_secret_access_key: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
 
       - name: Process hourly BTC data
         run: |
@@ -127,6 +130,9 @@ jobs:
 
       - name: Setup Environment
         uses: ./.github/actions/setup-environment
+        with:
+          dvc_access_key_id: ${{ secrets.DVC_ACCESS_KEY_ID }}
+          dvc_secret_access_key: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
 
       - name: Get reference data
         run: |

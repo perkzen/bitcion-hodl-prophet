@@ -1,48 +1,46 @@
 name: Setup Environment
 
-on:
-  workflow_call:
-   secrets:
-      dvc_access_key_id:
-        required: true
-      dvc_secret_access_key:
-        required: true
 
-jobs:
-  setup:
-    runs-on: ubuntu-latest
+inputs:
+  dvc_access_key_id:
+    required: true
+  dvc_secret_access_key:
+    required: true
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Install Poetry
-        run: pipx install poetry
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
-          cache: poetry
+    - name: Install Poetry
+      run: pipx install poetry
 
-      - name: Install Dependencies
-        run: poetry install --no-interaction --no-root
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.12"
+        cache: poetry
 
-      - name: Install DVC
-        uses: iterative/setup-dvc@v1
+    - name: Install Dependencies
+      run: poetry install --no-interaction --no-root
 
-      - name: Configure GIT
-        run: |
-          git config --global user.email "perko.domen@gmail.com"
-          git config --global user.name "perkzen"
+    - name: Install DVC
+      uses: iterative/setup-dvc@v1
 
-      - name: Configure DVC
-        run: |
-          dvc remote modify origin --local access_key_id ${{ secrets.dvc_access_key_id }} 
-          dvc remote modify origin --local secret_access_key ${{ secrets.dvc_secret_access_key }}
+    - name: Configure GIT
+      run: |
+        git config --global user.email "perko.domen@gmail.com"
+        git config --global user.name "perkzen"
 
-      - name: DVC pull
-        run: |
-          dvc pull -r origin --force
+    - name: Configure DVC
+      run: |
+        dvc remote modify origin --local access_key_id ${{ inputs.dvc_access_key_id }} 
+        dvc remote modify origin --local secret_access_key ${{ inputs.dvc_secret_access_key }}
+
+    - name: DVC pull
+      run: |
+        dvc pull -r origin --force
