@@ -1,9 +1,10 @@
 import argparse
 import os
-
 import joblib
 import pandas as pd
-from src.model.helpers import prepare_data, load_model, predict, inverse_transform, evaluate_model_performance
+from src.model.helpers.common import load_model, predict
+from src.model.helpers.regression.model import evaluate_model_performance
+from src.model.helpers.regression.preprocessing import inverse_transform, prepare_data
 from src.utils.logger import get_logger
 from src.vizualization.helpers import plot_predictions
 

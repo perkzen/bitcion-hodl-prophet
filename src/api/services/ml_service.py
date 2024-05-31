@@ -1,5 +1,5 @@
 import joblib
-from src.model.helpers import load_model, predict, create_time_series, inverse_transform
+from src.model.helpers.regression.model import load_model, predict, create_time_series, inverse_transform
 from src.utils.data import DataType
 from src.api.services import btc_service
 

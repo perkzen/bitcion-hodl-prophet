@@ -5,7 +5,8 @@ import joblib
 import tensorflow as tf
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
-from src.model.helpers import prepare_data, train_model, build_model
+from src.model.helpers.regression.model import train_model, build_model
+from src.model.helpers.regression.preprocessing import prepare_data
 
 from src.utils.logger import get_logger
 
@@ -41,7 +42,7 @@ def main() -> None:
 
     data = pd.read_csv(f"data/processed/{args.input}", index_col=0, parse_dates=True)
 
-    minmax = MinMaxScaler()
+    minmax = MinMaxScaler(feature_range=(0, 1))
 
     X_train, y_train, X_test, y_test = prepare_data(minmax, data)
     model = train_model(x_train=X_train, y_train=y_train, x_test=X_test, y_test=y_test, build_model_fn=build_model)
