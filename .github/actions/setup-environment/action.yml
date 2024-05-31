@@ -8,6 +8,10 @@ on:
         required: true
         type: string
 
+env:
+  DVC_ACCESS_KEY_ID: ${{ secrets.DVC_ACCESS_KEY_ID }}
+  DVC_SECRET_ACCESS_KEY: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
+
 jobs:
   setup:
     runs-on: ubuntu-latest
