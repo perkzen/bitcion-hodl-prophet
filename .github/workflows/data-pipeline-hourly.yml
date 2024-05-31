@@ -59,7 +59,6 @@ jobs:
         id: sha_fetch
         run: echo "SHA_FETCH=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-
   process:
     needs: fetch
 
@@ -110,7 +109,6 @@ jobs:
       - name: Get commit SHA and store it in GITHUB_OUTPUT
         id: sha_process
         run: echo "SHA_PROCESS=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
 
   validate:
     needs:
