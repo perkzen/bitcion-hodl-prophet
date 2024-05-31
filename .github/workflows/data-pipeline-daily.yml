@@ -27,7 +27,9 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup-environment
         with:
-            python-version: '3.12'
+          python-version: '3.12'
+          dvc-access-key-id: ${{ secrets.DVC_ACCESS_KEY_ID }}
+          dvc-secret-access-key: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
 
       - name: Fetch hourly BTC data
         run: |
@@ -78,6 +80,8 @@ jobs:
         uses: ./.github/actions/setup-environment
         with:
           python-version: '3.12'
+          dvc-access-key-id: ${{ secrets.DVC_ACCESS_KEY_ID }}
+          dvc-secret-access-key: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
 
       - name: Process hourly BTC data
         run: |
@@ -133,6 +137,8 @@ jobs:
         uses: ./.github/actions/setup-environment
         with:
           python-version: '3.12'
+          dvc-access-key-id: ${{ secrets.DVC_ACCESS_KEY_ID }}
+          dvc-secret-access-key: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
 
       - name: Get reference data
         run: |

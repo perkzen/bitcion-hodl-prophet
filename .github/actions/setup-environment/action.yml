@@ -7,10 +7,14 @@ on:
         description: 'Python version to use'
         required: true
         type: string
-
-env:
-  DVC_ACCESS_KEY_ID: ${{ secrets.DVC_ACCESS_KEY_ID }}
-  DVC_SECRET_ACCESS_KEY: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
+      dvc-access-key-id:
+        description: 'DVC access key ID'
+        required: true
+        type: string
+      dvc-secret-access-key:
+        description: 'DVC secret access key'
+        required: true
+        type: string
 
 jobs:
   setup:
@@ -43,8 +47,8 @@ jobs:
 
       - name: Configure DVC
         run: |
-          dvc remote modify origin --local access_key_id ${{ secrets.DVC_ACCESS_KEY_ID }}
-          dvc remote modify origin --local secret_access_key ${{ secrets.DVC_SECRET_ACCESS_KEY }}
+          dvc remote modify origin --local access_key_id ${{ inputs.dvc-access-key-id }}
+          dvc remote modify origin --local secret_access_key ${{ inputs.dvc-secret-access-key }}
 
       - name: DVC pull
         run: |
