@@ -3,8 +3,12 @@ name: Setup Environment
 on:
   workflow_call:
     secrets:
-      - DVC_ACCESS_KEY_ID
-      - DVC_SECRET_ACCESS_KEY
+      dvc_access_key_id:
+        description: 'DVC access key ID'
+        required: true
+      dvc_secret_access_key:
+        description: 'DVC secret access key'
+        required: true
 
 jobs:
   setup:

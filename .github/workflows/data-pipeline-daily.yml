@@ -23,6 +23,9 @@ jobs:
 
       - name: Setup Environment
         uses: ./.github/actions/setup-environment
+        with:
+          dvc_access_key_id: ${{ secrets.DVC_ACCESS_KEY_ID }}
+          dvc_secret_access_key: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
 
       - name: Fetch hourly BTC data
         run: |
