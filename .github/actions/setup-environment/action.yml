@@ -2,12 +2,12 @@ name: Setup Environment
 
 on:
   workflow_call:
-    secrets:
+    inputs:
       dvc_access_key_id:
-        description: 'DVC access key ID'
+        type: string
         required: true
       dvc_secret_access_key:
-        description: 'DVC secret access key'
+        type: string
         required: true
 
 jobs:
@@ -42,8 +42,8 @@ jobs:
 
       - name: Configure DVC
         run: |
-          dvc remote modify origin --local access_key_id ${{ secrets.DVC_ACCESS_KEY_ID}}
-          dvc remote modify origin --local secret_access_key ${{ secrets.DVC_SECRET_ACCESS_KEY }}
+          dvc remote modify origin --local access_key_id ${{ inputs.dvc_access_key_id }}
+          dvc remote modify origin --local secret_access_key ${{ inputs.dvc_secret_access_key }}
 
       - name: DVC pull
         run: |
