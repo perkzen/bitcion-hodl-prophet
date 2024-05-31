@@ -3,12 +3,9 @@ name: Setup Environment
 on:
   workflow_call:
     secrets:
-      dvc-access-key-id:
-        description: 'DVC access key ID'
-        required: true
-      dv-secret-access-key:
-        description: 'DVC secret access key'
-        required: true
+      - DVC_ACCESS_KEY_ID
+      - DVC_SECRET_ACCESS_KEY
+
 jobs:
   setup:
     runs-on: ubuntu-latest
@@ -41,8 +38,8 @@ jobs:
 
       - name: Configure DVC
         run: |
-          dvc remote modify origin --local access_key_id ${{ secrets.dvc-access-key-id }}
-          dvc remote modify origin --local secret_access_key ${{ secrets.dvc-secret-access-key }}
+          dvc remote modify origin --local access_key_id ${{ secrets.DVC_ACCESS_KEY_ID}}
+          dvc remote modify origin --local secret_access_key ${{ secrets.DVC_SECRET_ACCESS_KEY }}
 
       - name: DVC pull
         run: |
