@@ -1,5 +1,5 @@
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 
 def build_model() -> RandomForestClassifier:
@@ -18,6 +18,5 @@ def evaluate_model_performance(y_true, y_pred):
     precision = precision_score(y_true, y_pred)
     recall = recall_score(y_true, y_pred)
     f1 = f1_score(y_true, y_pred)
-    cm = confusion_matrix(y_true, y_pred)
 
-    return {"accuracy": accuracy, "precision": precision, "recall": recall, "f1": f1, "confusion_matrix": cm}
+    return {"accuracy": accuracy, "precision": precision, "recall": recall, "f1": f1, }

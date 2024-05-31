@@ -2854,6 +2854,23 @@ protobuf = ">=3.20.2"
 reference = ["Pillow", "google-re2"]
 
 [[package]]
+name = "onnxconverter-common"
+version = "1.13.0"
+description = "ONNX Converter and Optimization Tools"
+optional = false
+python-versions = "*"
+files = [
+    {file = "onnxconverter-common-1.13.0.tar.gz", hash = "sha256:03db8a6033a3d6590f22df3f64234079caa826375d1fcb0b37b8123c06bf598c"},
+    {file = "onnxconverter_common-1.13.0-py2.py3-none-any.whl", hash = "sha256:5ee1c025ef6c3b4abaede8425bc6b393248941a6cf8c21563d0d0e3f04634a0a"},
+]
+
+[package.dependencies]
+numpy = "*"
+onnx = "*"
+packaging = "*"
+protobuf = "*"
+
+[[package]]
 name = "onnxruntime"
 version = "1.18.0"
 description = "ONNX Runtime is a runtime accelerator for Machine Learning models"
@@ -4370,6 +4387,22 @@ files = [
 ]
 
 [[package]]
+name = "skl2onnx"
+version = "1.17.0"
+description = "Convert scikit-learn models to ONNX"
+optional = false
+python-versions = "*"
+files = [
+    {file = "skl2onnx-1.17.0-py2.py3-none-any.whl", hash = "sha256:27942fc2743efe9dff56380001da4685812d0f5b1b0b9c1a032e80d059d6779a"},
+    {file = "skl2onnx-1.17.0.tar.gz", hash = "sha256:7127dc84e470f489f68094ccfff9a5a815b609f700d43e708e6f658a33b06403"},
+]
+
+[package.dependencies]
+onnx = ">=1.2.1"
+onnxconverter-common = ">=1.7.0"
+scikit-learn = ">=1.1"
+
+[[package]]
 name = "smmap"
 version = "5.0.1"
 description = "A pure Python implementation of a sliding window memory map manager"
@@ -5440,4 +5473,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "5a6da4629c9a7ccddbe8e12963ac81845568e47d332ce6425be95dfda62068d9"
+content-hash = "f61e434eba2bcbd35b84790c7534a044f3d840577137b5d2387383a571178508"

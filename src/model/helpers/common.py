@@ -1,6 +1,16 @@
+from enum import Enum
+
 import numpy as np
 import pandas as pd
 import onnxruntime as ort
+
+
+class ModelType(Enum):
+    REGRESSION = "reg"
+    CLASSIFICATION = "cls"
+
+
+valid_model_types = {ModelType.REGRESSION.value, ModelType.CLASSIFICATION.value}
 
 
 def create_test_train_split(data: pd.DataFrame, split_size=0.3) -> tuple[np.ndarray, np.ndarray]:
@@ -16,4 +26,6 @@ def load_model(path: str) -> ort.InferenceSession:
 
 
 def predict(model: ort.InferenceSession, data: np.ndarray) -> np.ndarray:
-    return model.run(["output"], {"input": data})[0]
+    input_names = model.get_inputs()[0].name
+    output_names = model.get_outputs()[0].name
+    return model.run([output_names], {input_names: data})[0]
