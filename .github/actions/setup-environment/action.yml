@@ -1,12 +1,13 @@
 name: Setup Environment
-
+description: 'Setup environment for data pipeline'
 
 inputs:
   dvc_access_key_id:
+    description: 'DVC access key ID'
     required: true
   dvc_secret_access_key:
+    description: 'DVC secret access key'
     required: true
-
 
 runs:
   using: "composite"
@@ -17,6 +18,7 @@ runs:
         fetch-depth: 0
 
     - name: Install Poetry
+      shell: bash
       run: pipx install poetry
 
     - name: Setup Python
@@ -26,21 +28,25 @@ runs:
         cache: poetry
 
     - name: Install Dependencies
+      shell: bash
       run: poetry install --no-interaction --no-root
 
     - name: Install DVC
       uses: iterative/setup-dvc@v1
 
     - name: Configure GIT
+      shell: bash
       run: |
         git config --global user.email "perko.domen@gmail.com"
         git config --global user.name "perkzen"
 
     - name: Configure DVC
+      shell: bash
       run: |
         dvc remote modify origin --local access_key_id ${{ inputs.dvc_access_key_id }} 
         dvc remote modify origin --local secret_access_key ${{ inputs.dvc_secret_access_key }}
 
     - name: DVC pull
+      shell: bash
       run: |
         dvc pull -r origin --force
