@@ -32,7 +32,8 @@ def forecast_direction(data_type: DataType) -> int:
     model = load_model(f"models/{data_type.value}/cls_model.onnx")
     minmax = joblib.load(f"models/{data_type.value}/cls_minmax.pkl")
 
-    btc_hist = btc_service.get_last_n_entries(24, data_type)
+    # get last entry to predict the next one
+    btc_hist = btc_service.get_last_n_entries(1, data_type)
 
     data = minmax.transform(btc_hist)
 
