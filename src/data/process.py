@@ -37,18 +37,27 @@ def main() -> None:
     # Dividends and Stock Splits are not relevant for BTC
     btc_hist = btc_hist.drop(columns=["Dividends", "Stock Splits"])
 
+    # if index name is Datetime rename to date
+    if btc_hist.index.name == "Datetime":
+        btc_hist.index.name = "date"
+    else:
+        btc_hist.index.name = "date"
+
+    # column name to lower case
+    btc_hist.columns = [col.lower() for col in btc_hist.columns]
+
     # Only keep the last n rows
     btc_hist = btc_hist.tail(ROWS)
 
     btc_hist.to_csv(f"data/processed/{args.input}")
 
     # Process for classification
-    btc_hist["Tomorrow"] = btc_hist["Close"].shift(-1)
-    btc_hist["Target"] = (btc_hist["Tomorrow"] > btc_hist["Close"])
-    btc_hist["Target"] = btc_hist["Target"].astype(int)
+    btc_hist["tomorrow"] = btc_hist["close"].shift(-1)
+    btc_hist["target"] = (btc_hist["tomorrow"] > btc_hist["close"])
+    btc_hist["target"] = btc_hist["target"].astype(int)
 
     btc_hist.to_csv(f"data/processed/{args.input.split('.')[0]}_classification.csv")
-    print(btc_hist["Target"].value_counts())
+    print(btc_hist["target"].value_counts())
 
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ def create_time_series(data, n_past, target_col=0, feature_cols=None):
 def prepare_data(minmax: MinMaxScaler, data: pd.DataFrame, n_past=24) \
         -> tuple[
             np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    target = "Close"
+    target = "close"
     features = list(data.columns)
 
     target_idx = data.columns.get_loc(target)

@@ -8,8 +8,8 @@ from src.model.helpers.common import create_test_train_split
 def prepare_data(minmax: MinMaxScaler, data: pd.DataFrame) \
         -> tuple[
             np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    target = "Target"
-    features = [col for col in data.columns if col != target and col != "Tomorrow"]
+    target = "target"
+    features = [col for col in data.columns if col != target and col != "tomorrow"]
 
     train_data, test_data = create_test_train_split(data)
 

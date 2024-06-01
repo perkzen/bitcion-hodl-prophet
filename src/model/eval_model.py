@@ -61,7 +61,7 @@ def run_classification_evaluation(data_type: str) -> None:
 
     y_pred = predict(model, X_test.astype(float))
 
-    y_true = btc_hist["Target"].values[-len(y_pred):]
+    y_true = btc_hist["target"].values[-len(y_pred):]
 
     print(evaluate_cls_model_performance(y_true, y_pred))
 

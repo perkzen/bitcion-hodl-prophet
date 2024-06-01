@@ -21,22 +21,27 @@ def create_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def valid_args(args) -> bool:
+def valid_args(args) -> list[str]:
+    errors = []
     files = os.listdir("data/processed")
 
     if args.model not in valid_model_types:
-        return False
+        errors.append(f"Invalid model type '{args.model}'. Valid options are: {', '.join(valid_model_types)}")
+        return errors
 
     if args.input not in files:
-        return False
+        errors.append(f"Invalid input '{args.input}'. Valid options are: {', '.join(files)}")
+        return errors
 
     if args.model == ModelType.CLASSIFICATION.value and not args.input.endswith("_classification.csv"):
-        return False
+        errors.append("Classification model requires a classification input file")
+        return errors
 
     if args.model == ModelType.REGRESSION.value and args.input.endswith("_classification.csv"):
-        return False
+        errors.append("Regression model requires a regression input file")
+        return errors
 
-    return True
+    return errors
 
 
 def run_regression_training(input_file: str, data_type: str) -> None:
@@ -85,10 +90,10 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    is_valid = valid_args(args)
-    if not is_valid:
-        parser.error(f"\nInvalid input '{args.input}'. Valid options are: {', '.join(os.listdir('data/processed'))} \n"
-                     f"Invalid model type '{args.model}'. Valid options are: {', '.join(valid_model_types)}")
+    errors = valid_args(args)
+    if errors:
+        for error in errors:
+            parser.error(error)
 
     logger.info(f"Training model with data input: {args.input}, type: {args.model}")
 
