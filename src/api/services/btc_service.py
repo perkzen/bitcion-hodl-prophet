@@ -29,4 +29,9 @@ def get_last_n_entries(n: int, data_type: DataType, use_data=False) -> pd.DataFr
         btc_hist.index.rename("date", inplace=True)
         btc_hist.reset_index(inplace=True)
 
+    # numeric cols to have only 2 decimal places
+    numeric_cols = btc_hist.select_dtypes(include="number").columns
+
+    btc_hist[numeric_cols] = btc_hist[numeric_cols].map(lambda x: round(x, 2))
+
     return btc_hist.tail(n)
