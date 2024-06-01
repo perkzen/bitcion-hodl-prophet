@@ -44,7 +44,7 @@ export default async function Home({ searchParams }: HomeProps) {
         />
       </div>
       <div className={'mx-auto w-full'}>
-        <Chart data={prices} />
+        <Chart data={prices} dataType={dataType} />
       </div>
     </main>
   );

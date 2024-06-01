@@ -4,30 +4,32 @@ import {
   Legend,
   Line,
   LineChart,
+  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
-  ResponsiveContainer,
 } from 'recharts';
 import React, { useMemo } from 'react';
-import { PriceData } from '@/libs/api';
+import { DataType, PriceData } from '@/libs/api';
+import { formatDate } from '@/libs/utils';
 
 type ChartProps = {
   data: PriceData[];
+  dataType: DataType;
 };
 
-const PriceChart = ({ data }: ChartProps) => {
+const PriceChart = ({ data, dataType }: ChartProps) => {
   const prices = useMemo(() => {
     return data.map((d) => {
       return {
         ...d,
-        date: Intl.DateTimeFormat('en-DE', {
-          hour: 'numeric',
-          minute: 'numeric',
-        }).format(new Date(d.date)),
+        date:
+          dataType === DataType.DAILY
+            ? formatDate(d.date).split(',')[0]
+            : formatDate(d.date),
       };
     });
-  }, [data]);
+  }, [data, dataType]);
 
   return (
     <ResponsiveContainer width={'100%'} height={500}>
