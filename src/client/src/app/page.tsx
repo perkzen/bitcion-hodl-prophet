@@ -30,7 +30,7 @@ export default async function Home({ searchParams }: HomeProps) {
   const directionPrediction = await getDirectionForecast(dataType);
 
   return (
-    <main className="flex w-full flex-col gap-20 px-2 sm:px-24 py-8">
+    <main className="flex w-full flex-col gap-8 sm:gap-20 px-2 sm:px-24 py-8">
       <div className={'flex flex-row flex-wrap gap-4 justify-center w-full'}>
         <PriceCard price={currentPrice} date={lastDate} />
         <PricePredictionCard

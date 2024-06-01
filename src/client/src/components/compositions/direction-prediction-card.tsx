@@ -44,9 +44,9 @@ const DirectionPredictionCard = ({
       )}
     >
       <CardHeader>
-        <CardTitle>Bitcoin Price Prediction</CardTitle>
+        <CardTitle>Bitcoin Trend Prediction</CardTitle>
         <CardDescription className={'text-neutral-300'}>
-          Direction prediction for {formatDate(date)}
+          Trend prediction for {formatDate(date)}
         </CardDescription>
       </CardHeader>
       <CardContent className={'flex flex-row gap-4'}>
