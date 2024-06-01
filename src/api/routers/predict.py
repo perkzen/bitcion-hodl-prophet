@@ -3,7 +3,7 @@ from src.api.services import forecast_service
 from src.utils.data import DataType
 
 router = APIRouter(
-    tags=["predict"],
+    tags=["Predict"],
     prefix="/predict"
 )
 

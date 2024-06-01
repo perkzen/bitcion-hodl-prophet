@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
-from .routers import predict_router
+from .routers import predict_router, price_router
 
 app = FastAPI()
 
@@ -23,6 +23,7 @@ def root():
 
 
 app.include_router(predict_router)
+app.include_router(price_router)
 
 
 def run_server() -> None:
