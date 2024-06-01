@@ -10,11 +10,9 @@ router = APIRouter(
 
 @router.get("/price/{data_type}")
 def predict_price(data_type: DataType):
-    prediction = forecast_service.forecast_price(data_type)
-    return {"prediction": float(prediction)}
+    return forecast_service.forecast_price(data_type)
 
 
 @router.get("/direction/{data_type}")
 def predict_direction(data_type: DataType):
-    prediction = forecast_service.forecast_direction(data_type)
-    return {"prediction": "up" if prediction > 0 else "down"}
+    return forecast_service.forecast_direction(data_type)

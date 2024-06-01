@@ -1,11 +1,12 @@
 import joblib
+import pandas as pd
 from src.model.helpers.common import load_model, predict
 from src.model.helpers.regression.preprocessing import create_time_series, inverse_transform
 from src.utils.data import DataType
 from src.api.services import btc_service
 
 
-def forecast_price(data_type: DataType):
+def forecast_price(data_type: DataType) -> dict:
     model = load_model(f"models/{data_type.value}/model.onnx")
     minmax = joblib.load(f"models/{data_type.value}/minmax.pkl")
 
@@ -25,10 +26,20 @@ def forecast_price(data_type: DataType):
 
     pred = inverse_transform(data=y_pred, num_of_features=5, scaler=minmax)[0]
 
-    return pred
+    next_date = None
+    match data_type:
+        case DataType.DAILY:
+            next_date = btc_hist.index[-1] + pd.DateOffset(days=1)
+        case DataType.HOURLY:
+            next_date = btc_hist.index[-1] + pd.DateOffset(hours=1)
+
+    return {
+        "price": float(pred),
+        "date": next_date
+    }
 
 
-def forecast_direction(data_type: DataType) -> int:
+def forecast_direction(data_type: DataType) -> dict:
     model = load_model(f"models/{data_type.value}/cls_model.onnx")
     minmax = joblib.load(f"models/{data_type.value}/cls_minmax.pkl")
 
@@ -39,4 +50,13 @@ def forecast_direction(data_type: DataType) -> int:
 
     y_pred = predict(model, data.astype(float))
 
-    return int(y_pred[0])
+    next_date = None
+    match data_type:
+        case DataType.DAILY:
+            next_date = btc_hist.index[-1] + pd.DateOffset(days=1)
+        case DataType.HOURLY:
+            next_date = btc_hist.index[-1] + pd.DateOffset(hours=1)
+
+    direction = "up" if y_pred[0] > 0 else "down"
+
+    return {"direction": direction, "date": next_date}
