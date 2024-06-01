@@ -11,7 +11,7 @@ def forecast(data_type: DataType):
 
     btc_hist = btc_service.get_last_n_entries(25, data_type)
 
-    target = "Close"
+    target = "close"
     features = list(btc_hist.columns)
 
     target_idx = btc_hist.columns.get_loc(target)
