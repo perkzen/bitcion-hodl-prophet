@@ -1,4 +1,3 @@
-import numpy as np
 from src.api.services import forecast_service
 from src.utils.data import DataType
 
