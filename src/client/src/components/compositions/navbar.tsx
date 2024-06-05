@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Bitcoin from '@/assets/Bitcoin.png';
 import DataTypeSelect from '@/components/compositions/data-type-select';
+import { Suspense } from 'react';
 
 const Navbar = () => {
   return (
@@ -9,7 +10,9 @@ const Navbar = () => {
         <Image src={Bitcoin} alt={'Bitcoin'} width={48} height={48} />
         <h1 className="text-2xl font-bold">Bitcoin Hodl Prophet</h1>
       </div>
-      <DataTypeSelect />
+      <Suspense fallback={'Loading...'}>
+        <DataTypeSelect />
+      </Suspense>
     </nav>
   );
 };
