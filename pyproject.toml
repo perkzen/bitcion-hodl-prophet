@@ -31,6 +31,8 @@ tensorflow-model-optimization = "^0.8.0"
 scipy = "^1.13.0"
 tf-keras = "^2.16.0"
 skl2onnx = "^1.17.0"
+pydantic-settings = "^2.3.0"
+dagshub = "^0.3.27"
 
 
 

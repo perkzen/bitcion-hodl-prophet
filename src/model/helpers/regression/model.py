@@ -55,4 +55,4 @@ def evaluate_model_performance(y_true, y_pred) -> dict[str, float]:
     mae = mean_absolute_error(y_true, y_pred)
     evs = explained_variance_score(y_true, y_pred)
 
-    return {"mse": mse, "mae": mae, "evs": evs}
+    return {"MSE": mse, "MAE": mae, "EVS": evs}

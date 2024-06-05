@@ -1,5 +1,6 @@
 import {
   DataType,
+  Direction,
   getDirectionForecast,
   getPriceForecast,
   getPriceHistory,

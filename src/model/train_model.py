@@ -1,17 +1,21 @@
 import os
 import argparse
+import mlflow
 import tf2onnx
 import joblib
 import tensorflow as tf
 import pandas as pd
+from mlflow import MlflowClient
 from skl2onnx import to_onnx
 from sklearn.preprocessing import MinMaxScaler
+from src.model.helpers.mlflow import mlflow_authenticate, upload_model, upload_minmax
 from src.utils.logger import get_logger
 from src.model.helpers.common import valid_model_types, ModelType
 from src.model.helpers.regression.model import train_model as train_reg_model, build_model as build_reg_model
 from src.model.helpers.regression.preprocessing import prepare_data as prepare_reg_data
 from src.model.helpers.classification.model import train_model as train_cls_model, build_model as build_cls_model
 from src.model.helpers.classification.preprocessing import prepare_data as prepare_cls_data
+from mlflow.models import infer_signature
 
 
 def create_parser() -> argparse.ArgumentParser:
@@ -44,7 +48,7 @@ def valid_args(args) -> list[str]:
     return errors
 
 
-def run_regression_training(input_file: str, data_type: str) -> None:
+def run_regression_training(client: MlflowClient, input_file: str, data_type: str) -> None:
     data = pd.read_csv(f"data/processed/{input_file}", index_col=0, parse_dates=True)
 
     minmax = MinMaxScaler(feature_range=(0, 1))
@@ -61,27 +65,40 @@ def run_regression_training(input_file: str, data_type: str) -> None:
 
     onnx_model, _ = tf2onnx.convert.from_keras(model=model, input_signature=input_signature, opset=13)
 
+    model_path = f"models/{data_type}/model.onnx"
+    minmax_path = f"models/{data_type}/minmax.pkl"
+
     joblib.dump(minmax, f"models/{data_type}/minmax.pkl")
 
     with open(f"models/{data_type}/model.onnx", "wb") as f:
         f.write(onnx_model.SerializeToString())
 
+    signature = infer_signature(X_test, model.predict(X_test))
+    upload_model(client, onnx_model, model_path, signature)
+    upload_minmax(client, minmax, minmax_path)
 
-def run_classification_training(input_file: str, data_type: str) -> None:
+
+def run_classification_training(client: MlflowClient, input_file: str, data_type: str) -> None:
     data = pd.read_csv(f"data/processed/{input_file}", index_col=0, parse_dates=True)
 
     minmax = MinMaxScaler(feature_range=(0, 1))
 
-    X_train, y_train, _, _ = prepare_cls_data(minmax, data)
+    X_train, y_train, X_test, y_test = prepare_cls_data(minmax, data)
     model = train_cls_model(x_train=X_train, y_train=y_train,
                             build_model_fn=build_cls_model)
 
     onnx_model = to_onnx(model, X_train.astype(float))
 
-    joblib.dump(minmax, f"models/{data_type}/cls_minmax.pkl")
+    model_path = f"models/{data_type}/cls_model.onnx"
+    minmax_path = f"models/{data_type}/cls_minmax.pkl"
 
-    with open(f"models/{data_type}/cls_model.onnx", "wb") as f:
+    joblib.dump(minmax, minmax_path)
+    with open(model_path, "wb") as f:
         f.write(onnx_model.SerializeToString())
+
+    signature = infer_signature(X_test, model.predict(X_test))
+    upload_model(client, onnx_model, model_path, signature)
+    upload_minmax(client, minmax, minmax_path)
 
 
 def main() -> None:
@@ -101,11 +118,16 @@ def main() -> None:
     data_type = (args.input.split("_")[2]).split(".")[0]
     os.makedirs(f"models/{data_type}", exist_ok=True)
 
+    client = mlflow_authenticate()
+    mlflow.start_run(run_name=f"bitcoin-hodl-{data_type}-model", experiment_id="1")
+
     match args.model:
         case ModelType.CLASSIFICATION.value:
-            run_classification_training(args.input, data_type)
+            run_classification_training(client, args.input, data_type)
         case ModelType.REGRESSION.value:
-            run_regression_training(args.input, data_type)
+            run_regression_training(client, args.input, data_type)
+
+    mlflow.end_run()
 
 
 if __name__ == '__main__':
