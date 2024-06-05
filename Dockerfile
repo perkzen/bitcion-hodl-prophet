@@ -42,4 +42,4 @@ COPY . /code
 
 RUN python3 -m src.model.download_production_models
 
-CMD ["uvicorn", "src.service.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
