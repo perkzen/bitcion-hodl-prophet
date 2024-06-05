@@ -1,6 +1,7 @@
 import argparse
 import os
 from logging import Logger
+import mlflow
 import pandas as pd
 from mlflow import MlflowClient
 from src.model.helpers.mlflow import mlflow_authenticate, download_staging_models, download_production_models, \
@@ -64,6 +65,8 @@ def run_regression_evaluation(client: MlflowClient, data_type: str, logger: Logg
     stg_y_true, stg_y_pred = make_predictions(stg_model, stg_minmax, btc_hist)
     stg_eval = evaluate_reg_model_performance(stg_y_true, stg_y_pred)
 
+    mlflow.log_metrics(stg_eval)
+
     logger.info(f"Staging model evaluation: {stg_eval}")
 
     prod_y_true, prod_y_pred = make_predictions(prod_model, prod_minmax, btc_hist)
@@ -112,6 +115,8 @@ def run_classification_evaluation(client: MlflowClient, data_type: str, logger: 
     stg_y_true, stg_y_pred = make_predictions(stg_model, stg_minmax, btc_hist)
     stg_eval = evaluate_cls_model_performance(stg_y_true, stg_y_pred)
 
+    mlflow.log_metrics(stg_eval)
+
     logger.info(f"Staging model evaluation: {stg_eval}")
 
     prod_y_true, prod_y_pred = make_predictions(prod_model, prod_minmax, btc_hist)
@@ -143,11 +148,15 @@ def main() -> None:
 
     client = mlflow_authenticate()
 
+    mlflow.start_run(run_name=f"bitcoin-hodl-{args.type}-{args.model}-model")
+
     match args.model:
         case ModelType.REGRESSION.value:
             run_regression_evaluation(client, args.type, logger)
         case ModelType.CLASSIFICATION.value:
             run_classification_evaluation(client, args.type, logger)
+
+    mlflow.end_run()
 
 
 if __name__ == '__main__':

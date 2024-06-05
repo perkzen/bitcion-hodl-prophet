@@ -12,8 +12,7 @@ from mlflow.sklearn import log_model as log_minmax, load_model as load_minmax
 from onnxruntime import InferenceSession
 from sklearn.preprocessing import MinMaxScaler
 from src.config import settings
-from src.model.helpers.common import ModelType, load_model
-from src.utils.data import DataType
+from src.model.helpers.common import load_model
 
 
 class Stage(Enum):
@@ -46,13 +45,14 @@ def upload_model(client: MlflowClient, model: Any, model_name: str, signature: M
     client.set_registered_model_alias(name=model_name, alias=Stage.STAGING.value, version=mv.version)
 
 
-def upload_minmax(client: MlflowClient, minmax: Any, model_name: str) -> None:
-    ensure_model_exists(client, model_name)
+def upload_minmax(client: MlflowClient, minmax: Any, minmax_name: str) -> None:
+    ensure_model_exists(client, minmax_name)
     metadata = {"feature_range": minmax.feature_range}
-    saved_minmax = log_minmax(sk_model=minmax, artifact_path=f"minmax/{model_name}", registered_model_name=model_name,
+    saved_minmax = log_minmax(sk_model=minmax, artifact_path=f"minmax/{minmax_name}", registered_model_name=minmax_name,
                               metadata=metadata)
-    mv = client.create_model_version(name=model_name, source=saved_minmax.model_uri, run_id=saved_minmax.run_id)
-    client.set_registered_model_alias(name=model_name, alias=Stage.STAGING.value, version=mv.version)
+    mv = client.create_model_version(name=minmax_name, source=saved_minmax.model_uri, run_id=saved_minmax.run_id)
+
+    client.set_registered_model_alias(name=minmax_name, alias=Stage.STAGING.value, version=mv.version)
 
 
 def download_model(client: MlflowClient, model_name: str, data_type: str, stage: Stage) -> str:

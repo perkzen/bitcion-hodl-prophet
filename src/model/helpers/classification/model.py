@@ -19,4 +19,4 @@ def evaluate_model_performance(y_true, y_pred):
     recall = recall_score(y_true, y_pred)
     f1 = f1_score(y_true, y_pred)
 
-    return {"accuracy": accuracy, "precision": precision, "recall": recall, "f1": f1, }
+    return {"Accuracy": accuracy, "Precision": precision, "Recall": recall, "F1": f1, }

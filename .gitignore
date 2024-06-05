@@ -161,4 +161,6 @@ cython_debug/
 
 /data
 
-#models/
+# ignore all .onnx and .pkl files
+models/*.onnx
+models/*.pkl

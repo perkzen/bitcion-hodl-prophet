@@ -68,11 +68,6 @@ def run_regression_training(client: MlflowClient, input_file: str, data_type: st
     model_path = f"models/{data_type}/model.onnx"
     minmax_path = f"models/{data_type}/minmax.pkl"
 
-    joblib.dump(minmax, f"models/{data_type}/minmax.pkl")
-
-    with open(f"models/{data_type}/model.onnx", "wb") as f:
-        f.write(onnx_model.SerializeToString())
-
     signature = infer_signature(X_test, model.predict(X_test))
     upload_model(client, onnx_model, model_path, signature)
     upload_minmax(client, minmax, minmax_path)
@@ -91,10 +86,6 @@ def run_classification_training(client: MlflowClient, input_file: str, data_type
 
     model_path = f"models/{data_type}/cls_model.onnx"
     minmax_path = f"models/{data_type}/cls_minmax.pkl"
-
-    joblib.dump(minmax, minmax_path)
-    with open(model_path, "wb") as f:
-        f.write(onnx_model.SerializeToString())
 
     signature = infer_signature(X_test, model.predict(X_test))
     upload_model(client, onnx_model, model_path, signature)
@@ -119,15 +110,12 @@ def main() -> None:
     os.makedirs(f"models/{data_type}", exist_ok=True)
 
     client = mlflow_authenticate()
-    mlflow.start_run(run_name=f"bitcoin-hodl-{data_type}-model", experiment_id="1")
 
     match args.model:
         case ModelType.CLASSIFICATION.value:
             run_classification_training(client, args.input, data_type)
         case ModelType.REGRESSION.value:
             run_regression_training(client, args.input, data_type)
-
-    mlflow.end_run()
 
 
 if __name__ == '__main__':
