@@ -1,4 +1,5 @@
 import { env } from '@/libs/env';
+import axios from 'axios';
 
 export enum DataType {
   HOURLY = 'hourly',
@@ -28,21 +29,26 @@ export type PricePrediction = {
   date: string;
 };
 
+const api = axios.create({
+  baseURL: env('NEXT_PUBLIC_API_URL'),
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
 export const getPriceForecast = async (data: DataType) => {
-  const response = await fetch(
-    `${env('NEXT_PUBLIC_API_URL')}/predict/price/${data}`
-  );
-  return (await response.json()) as PricePrediction;
+  const response = await api.get<PricePrediction>(`/predict/price/${data}`);
+  return response.data as PricePrediction;
 };
 
 export const getDirectionForecast = async (data: DataType) => {
-  const response = await fetch(
-    `${env('NEXT_PUBLIC_API_URL')}/predict/direction/${data}`
+  const response = await api.get<DirectionPrediction>(
+    `/predict/direction/${data}`
   );
-  return (await response.json()) as DirectionPrediction;
+  return response.data as DirectionPrediction;
 };
 
 export const getPriceHistory = async (data: DataType) => {
-  const response = await fetch(`${env('NEXT_PUBLIC_API_URL')}/price/${data}`);
-  return (await response.json()) as PriceData[];
+  const response = await api.get<PriceData[]>(`/price/${data}`);
+  return response.data as PriceData[];
 };

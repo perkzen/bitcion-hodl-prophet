@@ -22,6 +22,7 @@ const DataTypeSelect = () => {
     (value: string) => {
       setSelected(value);
       router.push(`?data=${value}`, {});
+      router.refresh();
     },
     [router]
   );
