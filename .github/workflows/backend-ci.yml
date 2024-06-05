@@ -44,6 +44,10 @@ jobs:
           poetry run poe lint
         continue-on-error: false
 
+      - name: Download Models
+        run: |
+          poetry run poe download_models 
+
       - name: Run tests
         run: |
           poetry run poe test
