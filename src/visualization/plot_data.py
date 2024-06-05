@@ -1,6 +1,6 @@
 import pandas as pd
 
-from src.vizualization.helpers import plot_values
+from src.visualization.helpers import plot_values
 
 
 def main() -> None:

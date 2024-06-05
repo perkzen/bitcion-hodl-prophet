@@ -30,4 +30,6 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY . /code
 
+RUN python3 -m src.model.download_production_models
+
 CMD ["uvicorn", "src.service.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,10 +1,8 @@
 data/
-models/
 notebooks/
 reports/
 src/client
 src/data
-src/model
 src/visualization
 
 LICENSE
