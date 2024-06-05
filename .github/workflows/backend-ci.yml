@@ -47,3 +47,11 @@ jobs:
       - name: Run tests
         run: |
           poetry run poe test
+
+      - name: Install Railway CLI
+        run: bash <(curl -fsSL cli.new)
+
+      - name: Deploy to Railway
+        run: railway up --service btc-hodl-api
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
