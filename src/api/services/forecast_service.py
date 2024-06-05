@@ -7,8 +7,8 @@ from src.api.services import btc_service
 
 
 def forecast_price(data_type: DataType) -> dict:
-    model = load_model(f"models/{data_type.value}/model.onnx")
-    minmax = joblib.load(f"models/{data_type.value}/minmax.pkl")
+    model = load_model(f"models/{data_type.value}/production_model.onnx")
+    minmax = joblib.load(f"models/{data_type.value}/production_minmax.pkl")
 
     btc_hist = btc_service.get_last_n_entries(25, data_type)
 
@@ -40,8 +40,8 @@ def forecast_price(data_type: DataType) -> dict:
 
 
 def forecast_direction(data_type: DataType) -> dict:
-    model = load_model(f"models/{data_type.value}/cls_model.onnx")
-    minmax = joblib.load(f"models/{data_type.value}/cls_minmax.pkl")
+    model = load_model(f"models/{data_type.value}/production_cls_model.onnx")
+    minmax = joblib.load(f"models/{data_type.value}/production_cls_minmax.pkl")
 
     # get last entry to predict the next one
     btc_hist = btc_service.get_last_n_entries(1, data_type)
