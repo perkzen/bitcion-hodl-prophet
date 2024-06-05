@@ -1,0 +1,66 @@
+name: Training Pipeline
+
+
+on:
+  workflow_run:
+    workflows: [ "Daily Data Pipeline", "Hourly Data Pipeline" ]
+    types:
+      - completed
+  workflow_dispatch:
+
+
+jobs:
+  train:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+        with:
+          dvc_access_key_id: ${{ secrets.DVC_ACCESS_KEY_ID }}
+          dvc_secret_access_key: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
+
+      - name: Train model (daily)
+        if: github.event.workflow_run.workflow_name == 'Daily Data Pipeline'
+        run: |
+          poetry run poe train --input btc_price_daily.csv --model reg
+          poetry run poe train --input btc_price_daily_classification.csv --model cls
+
+      - name: Train model (hourly)
+        if: github.event.workflow_run.workflow_name == 'Hourly Data Pipeline'
+        run: |
+          poetry run poe train --input btc_price_hourly.csv --model reg
+          poetry run poe train --input btc_price_hourly_classification.csv --model cls
+
+  evaluate:
+    needs:
+      - train
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+        with:
+          dvc_access_key_id: ${{ secrets.DVC_ACCESS_KEY_ID }}
+          dvc_secret_access_key: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
+
+      - name: Evaluate model (daily)
+        if: github.event.workflow_run.workflow_name == 'Daily Data Pipeline'
+        run: |
+          poetry run poe evaluate --type daily --model reg
+          poetry run poe evaluate --type daily --model cls
+
+      - name: Evaluate model (hourly)
+        if: github.event.workflow_run.workflow_name == 'Hourly Data Pipeline'
+        run: |
+          poetry run poe evaluate --type hourly --model reg
+          poetry run poe evaluate --type hourly --model cls
