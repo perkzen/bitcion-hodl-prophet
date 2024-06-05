@@ -10,9 +10,10 @@ import {
   YAxis,
 } from 'recharts';
 import React, { useMemo } from 'react';
-import { DataType, PriceData } from '@/libs/api';
+import { DataType, PriceData } from '@/api';
 import { formatDate } from '@/libs/utils';
 import useIsMobile from '@/libs/use-is-mobile';
+import { usePriceForecast, usePriceHistory } from '@/api/hooks';
 
 type ChartProps = {
   data: PriceData[];
@@ -23,7 +24,11 @@ const PriceChart = ({ data, dataType }: ChartProps) => {
   const isMobile = useIsMobile();
 
   const prices = useMemo(() => {
-    return data.map((d) => {
+    if (data.length === 0 || !data) {
+      return [];
+    }
+
+    return data?.map((d) => {
       return {
         ...d,
         date:

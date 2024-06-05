@@ -1,4 +1,3 @@
-import { env } from '@/libs/env';
 import axios from 'axios';
 
 export enum DataType {
@@ -30,7 +29,7 @@ export type PricePrediction = {
 };
 
 const api = axios.create({
-  baseURL: env('NEXT_PUBLIC_API_URL'),
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },

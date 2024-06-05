@@ -1,4 +1,4 @@
-import { Direction } from '@/libs/api';
+import { Direction } from '@/api';
 import {
   Card,
   CardContent,

@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/card';
 import { cn, formatCurrency, formatDate } from '@/libs/utils';
 import React from 'react';
-import { Direction } from '@/libs/api';
+import { Direction } from '@/api';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 
 type PricePredictionCardProps = {
