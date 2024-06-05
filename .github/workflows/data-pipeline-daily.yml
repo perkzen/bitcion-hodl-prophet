@@ -77,7 +77,7 @@ jobs:
           dvc_access_key_id: ${{ secrets.DVC_ACCESS_KEY_ID }}
           dvc_secret_access_key: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
 
-      - name: Process hourly BTC data
+      - name: Process daily BTC data
         run: |
           poetry run poe process --input btc_price_daily.csv 
 
