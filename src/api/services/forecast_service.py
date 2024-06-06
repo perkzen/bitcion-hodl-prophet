@@ -1,5 +1,3 @@
-import datetime
-
 import joblib
 import pandas as pd
 from src.model.helpers.common import load_model, predict
