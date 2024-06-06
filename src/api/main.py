@@ -6,11 +6,10 @@ from .routers import predict_router, price_router
 
 app = FastAPI()
 
-origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,7 +26,7 @@ app.include_router(price_router)
 
 
 def run_server() -> None:
-    uvicorn.run(app="src.api.main:app", host="0.0.0.0", port=8000, reload=True, access_log=True)
+    uvicorn.run(app="src.api.main:app", host="127.0.0.1", port=8000, reload=True, access_log=True)
 
 
 if __name__ == "__main__":
