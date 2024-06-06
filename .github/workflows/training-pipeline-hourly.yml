@@ -2,7 +2,7 @@ name: Training Pipeline
 
 on:
   workflow_run:
-    workflows: [ "Daily Data Pipeline"]
+    workflows: [ "Hourly Data Pipeline"]
     types:
       - completed
   workflow_dispatch:
@@ -23,10 +23,10 @@ jobs:
           dvc_access_key_id: ${{ secrets.DVC_ACCESS_KEY_ID }}
           dvc_secret_access_key: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
 
-      - name: Train model (daily)
+      - name: Train model (hourly)
         run: |
-          poetry run poe train --input btc_price_daily.csv --model reg
-          poetry run poe train --input btc_price_daily_classification.csv --model cls
+          poetry run poe train --input btc_price_hourly.csv --model reg
+          poetry run poe train --input btc_price_hourly_classification.csv --model cls
 
   evaluate:
     needs:
@@ -44,7 +44,7 @@ jobs:
           dvc_access_key_id: ${{ secrets.DVC_ACCESS_KEY_ID }}
           dvc_secret_access_key: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
 
-      - name: Evaluate model (daily)
+      - name: Evaluate model (hourly)
         run: |
-          poetry run poe evaluate --type daily --model reg
-          poetry run poe evaluate --type daily --model cls
+          poetry run poe evaluate --type hourly --model reg
+          poetry run poe evaluate --type hourly --model cls
