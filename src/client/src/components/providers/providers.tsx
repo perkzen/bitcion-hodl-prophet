@@ -2,6 +2,7 @@
 
 import { PropsWithChildren, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AppProgressBar } from 'next-nprogress-bar';
 
 const Providers = ({ children }: PropsWithChildren) => {
   const [queryClient] = useState(
@@ -15,7 +16,15 @@ const Providers = ({ children }: PropsWithChildren) => {
       })
   );
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <AppProgressBar
+        height="4px"
+        color="#F6931D"
+        options={{ showSpinner: false }}
+        shallowRouting
+      />
+    </>
   );
 };
 
