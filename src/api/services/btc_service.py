@@ -1,8 +1,5 @@
 import pandas as pd
-import yfinance as yf
 from src.utils.data import DataType
-
-ticker = yf.Ticker("BTC-USD")
 
 options = {
     DataType.HOURLY.value: {
