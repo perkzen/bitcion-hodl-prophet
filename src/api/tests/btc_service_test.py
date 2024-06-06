@@ -1,5 +1,3 @@
-import pandas as pd
-
 from src.api.services import btc_service
 from src.utils.data import DataType
 
