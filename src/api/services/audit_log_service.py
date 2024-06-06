@@ -1,7 +1,5 @@
 from src.api.db.client import db
 from src.api.models.audit_log import AuditLog
-from src.model.helpers.common import ModelType
-from src.utils.data import DataType
 from src.utils.logger import get_logger
 
 _collection = db["audit_logs"]
