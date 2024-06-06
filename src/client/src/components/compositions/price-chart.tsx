@@ -39,21 +39,13 @@ const PriceChart = ({ data, dataType }: ChartProps) => {
     });
   }, [data, dataType]);
 
-  const xInterval = dataType === DataType.DAILY ? 2 : 30;
-
   return (
     <ResponsiveContainer width={'100%'} height={500}>
       <AreaChart
         data={prices}
         margin={{ right: 60, left: 60, top: 30, bottom: 30 }}
       >
-        <XAxis
-          type={'category'}
-          dataKey="date"
-          xAxisId={0}
-          interval={isMobile ? undefined : xInterval}
-          tick={{ dy: 5 }}
-        >
+        <XAxis type={'category'} dataKey="date" xAxisId={0} tick={{ dy: 5 }}>
           <Label value="Date" offset={0} position="bottom" />
         </XAxis>
         <YAxis
