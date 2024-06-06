@@ -26,7 +26,6 @@ jobs:
           dvc_access_key_id: ${{ secrets.DVC_ACCESS_KEY_ID }}
           dvc_secret_access_key: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
 
-
       - name: Validate daily classification predictions
         run: |
           poetry run poe validate_predictions --model cls --type daily
