@@ -1,0 +1,44 @@
+name: Validate production predictions
+
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # This triggers the workflow at midnight every day
+  workflow_dispatch:
+
+
+env:
+  MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+  MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
+  MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
+  DAGSHUB_USER_TOKEN: ${{ secrets.DAGSHUB_USER_TOKEN }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+
+jobs:
+  validate_predictions:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+        with:
+          dvc_access_key_id: ${{ secrets.DVC_ACCESS_KEY_ID }}
+          dvc_secret_access_key: ${{ secrets.DVC_SECRET_ACCESS_KEY }}
+
+
+      - name: Validate daily classification predictions
+        run: |
+          poetry run poe validate_predictions --model cls --type daily
+
+      - name: Validate daily regression predictions
+        run: |
+          poetry run poe validate_predictions --model reg --type daily
+
+      - name: Validate hourly classification predictions
+        run: |
+          poetry run poe validate_predictions --model cls --type hourly
+
+      - name: Validate hourly regression predictions
+        run: |
+          poetry run poe validate_predictions --model reg --type hourly

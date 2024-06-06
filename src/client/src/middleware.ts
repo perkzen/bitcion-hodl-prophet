@@ -7,8 +7,10 @@ export const config = {
   ],
 };
 
+const ALLOWED_PATHS = ['/', '/dashboard'];
+
 export function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname !== '/') {
+  if (!ALLOWED_PATHS.includes(request.nextUrl.pathname)) {
     return NextResponse.redirect(new URL('/', request.url));
   }
   return NextResponse.next();

@@ -18,7 +18,7 @@ from src.model.helpers.common import load_model
 class Stage(Enum):
     PRODUCTION = "production"
     STAGING = "staging"
-    DEVELOPMENT = "development"
+    ARCHIVE = "archive"
 
 
 def mlflow_authenticate() -> MlflowClient:
@@ -126,9 +126,15 @@ def demote_model(client: MlflowClient, model_name: str, minmax_name: str, data_t
     production_minmax = client.get_model_version_by_alias(minmax_name, Stage.PRODUCTION.value)
 
     # Demote production model to development
-    client.set_registered_model_alias(name=model_name, alias=Stage.DEVELOPMENT.value, version=production_model.version)
-    client.set_registered_model_alias(name=minmax_name, alias=Stage.DEVELOPMENT.value,
+    client.set_registered_model_alias(name=model_name, alias=Stage.ARCHIVE.value, version=production_model.version)
+    client.set_registered_model_alias(name=minmax_name, alias=Stage.ARCHIVE.value,
                                       version=production_minmax.version)
 
     client.delete_registered_model_alias(name=model_name, alias=Stage.PRODUCTION.value)
     client.delete_registered_model_alias(name=minmax_name, alias=Stage.PRODUCTION.value)
+
+
+def get_model_version(client: MlflowClient, model_name: str, data_type: str, stage: Stage) -> str:
+    model_path = f"models/{data_type}/{model_name}"
+    model_version = client.get_model_version_by_alias(model_path, stage.value).version
+    return model_version

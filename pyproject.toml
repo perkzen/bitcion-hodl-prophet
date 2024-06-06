@@ -17,6 +17,8 @@ plot = "python -m src.vizualization.plot_data"
 test = "pytest src/api"
 lint = "ruff check ."
 download_models = "python -m src.model.download_production_models"
+validate_predictions = "python -m src.validation.validate_production_predictions"
+
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -35,6 +37,7 @@ skl2onnx = "^1.17.0"
 pydantic-settings = "^2.3.0"
 dagshub = "^0.3.27"
 python-dotenv = "^1.0.1"
+pymongo = "^4.7.3"
 
 
 
