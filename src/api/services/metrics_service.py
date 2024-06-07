@@ -1,7 +1,6 @@
 from src.api.db.client import db
 from src.api.models.model_metric import ModelMetric
 from src.model.helpers.common import ModelType
-from src.model.helpers.production_models_versions import get_production_model_version
 from src.utils.data import DataType
 from src.utils.logger import get_logger
 
@@ -16,36 +15,22 @@ def save(metric: ModelMetric) -> str:
     return result.inserted_id
 
 
+def _get_query(data_type: DataType, model_type: ModelType) -> dict:
+    """Generate a query dictionary for the given data and model type."""
+    return {
+        "model_type": model_type.value,
+        "data_type": data_type.value,
+    }
+
+
 def find_all() -> list[ModelMetric]:
-    daily_reg_query = {
-        "model_type": "reg",
-        "data_type": "daily",
-        "model_version": get_production_model_version(DataType.DAILY, ModelType.REGRESSION)
-    }
-    daily_cls_query = {
-        "model_type": "cls",
-        "data_type": "daily",
-        "model_version": get_production_model_version(DataType.DAILY, ModelType.CLASSIFICATION)
-    }
+    daily_reg = find_metric(DataType.DAILY, ModelType.REGRESSION)
+    daily_cls = find_metric(DataType.DAILY, ModelType.CLASSIFICATION)
+    hourly_reg = find_metric(DataType.HOURLY, ModelType.REGRESSION)
+    hourly_cls = find_metric(DataType.HOURLY, ModelType.CLASSIFICATION)
+    return [daily_reg, daily_cls, hourly_reg, hourly_cls]
 
-    hourly_reg_query = {
-        "model_type": "reg",
-        "data_type": "hourly",
-        "model_version": get_production_model_version(DataType.HOURLY, ModelType.REGRESSION)
-    }
 
-    hourly_cls_query = {
-        "model_type": "cls",
-        "data_type": "hourly",
-        "model_version": get_production_model_version(DataType.HOURLY, ModelType.CLASSIFICATION)
-    }
-
-    daily_reg_metrics = _collection.find(daily_reg_query)
-    daily_cls_metrics = _collection.find(daily_cls_query)
-    hourly_reg_metrics = _collection.find(hourly_reg_query)
-    hourly_cls_metrics = _collection.find(hourly_cls_query)
-
-    return [ModelMetric(**metric) for metric in daily_reg_metrics] + \
-        [ModelMetric(**metric) for metric in daily_cls_metrics] + \
-        [ModelMetric(**metric) for metric in hourly_reg_metrics] + \
-        [ModelMetric(**metric) for metric in hourly_cls_metrics]
+def find_metric(data_type: DataType, model_type: ModelType) -> ModelMetric:
+    doc = _collection.find_one(_get_query(data_type, model_type))
+    return ModelMetric(**doc)

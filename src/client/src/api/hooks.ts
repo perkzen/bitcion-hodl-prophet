@@ -32,7 +32,7 @@ export const usePriceHistory = (data: DataType) =>
   });
 
 export const AUDIT_LOG_QUERY_KEY = 'audit-log';
-export const useAuditLog = () =>
+export const useAuditLogs = () =>
   useQuery({
     initialData: [],
     queryKey: [AUDIT_LOG_QUERY_KEY],
@@ -41,7 +41,7 @@ export const useAuditLog = () =>
 
 export const METRIC_QUERY_KEY = 'metric';
 
-export const useMetric = () =>
+export const useMetrics = () =>
   useQuery({
     initialData: [],
     queryKey: [METRIC_QUERY_KEY],

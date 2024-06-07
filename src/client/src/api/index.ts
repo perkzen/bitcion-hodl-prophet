@@ -63,6 +63,7 @@ export type Metric = {
   data_type: DataType;
   model_version: string;
   metrics: ClsMetric | RegMetric;
+  created_at: string;
 };
 
 const api = axios.create({

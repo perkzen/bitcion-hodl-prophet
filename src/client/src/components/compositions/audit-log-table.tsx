@@ -30,7 +30,7 @@ import {
 import { Button } from '../ui/button';
 import { useState } from 'react';
 import { AuditLog, DataType, ModelType } from '@/api';
-import { useAuditLog } from '@/api/hooks';
+import { useAuditLogs } from '@/api/hooks';
 import DataTypeBadge from '@/components/compositions/data-type-badge';
 import ModelTypeBadge from '@/components/compositions/model-type-badge';
 import {
@@ -97,7 +97,7 @@ export function AuditLogTable() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
-  const { data } = useAuditLog();
+  const { data } = useAuditLogs();
 
   const table = useReactTable({
     data,

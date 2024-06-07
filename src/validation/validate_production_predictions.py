@@ -36,7 +36,8 @@ def valid_args(args) -> list[str]:
 logger = get_logger()
 
 
-def validate_classification_predictions(data: pd.DataFrame, predictions: list[AuditLog], model_version: str) -> None:
+def validate_classification_predictions(data: pd.DataFrame, predictions: list[AuditLog], data_type: str,
+                                        model_version: str) -> None:
     actuals = []
     preds = []
 
@@ -66,13 +67,14 @@ def validate_classification_predictions(data: pd.DataFrame, predictions: list[Au
     logger.info(f"Recall: {recall:.2f}")
     logger.info(f"F1 Score: {f1:.2f}")
 
-    metrics_service.save(ModelMetric(model_type="cls", data_type="hourly",
+    metrics_service.save(ModelMetric(model_type="cls", data_type=data_type,
                                      model_version=model_version,
                                      metrics={"accuracy": accuracy, "precision": precision, "recall": recall,
                                               "f1": f1}))
 
 
-def validate_regression_predictions(data: pd.DataFrame, predictions: list[AuditLog], model_version: str) -> None:
+def validate_regression_predictions(data: pd.DataFrame, predictions: list[AuditLog], data_type: str,
+                                    model_version: str) -> None:
     actuals = []
     preds = []
 
@@ -100,7 +102,7 @@ def validate_regression_predictions(data: pd.DataFrame, predictions: list[AuditL
     logger.info(f"Mean Squared Error (MSE): {mse:.2f}")
     logger.info(f"Explained Variance Score (EVS): {evs:.2f}")
 
-    metrics_service.save(ModelMetric(model_type="reg", data_type="hourly", model_version=model_version,
+    metrics_service.save(ModelMetric(model_type="reg", data_type=data_type, model_version=model_version,
                                      metrics={"mae": mae, "mse": mse, "evs": evs}))
 
 
@@ -123,10 +125,11 @@ def main() -> None:
     match args.model:
         case "cls":
             validate_classification_predictions(btc_hist, predictions,
+                                                args.type,
                                                 get_production_model_version(DataType(args.type),
                                                                              ModelType(args.model)))
         case "reg":
-            validate_regression_predictions(btc_hist, predictions,
+            validate_regression_predictions(btc_hist, predictions, args.type,
                                             get_production_model_version(DataType(args.type), ModelType(args.model)))
 
 
