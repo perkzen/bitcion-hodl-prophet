@@ -1,9 +1,5 @@
 'use client';
-import {
-  CaretSortIcon,
-  ChevronDownIcon,
-  DotsHorizontalIcon,
-} from '@radix-ui/react-icons';
+import { CaretSortIcon, ChevronDownIcon } from '@radix-ui/react-icons';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -23,7 +19,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -43,10 +38,10 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { formatDate } from '@/libs/utils';
 
 export const columns: ColumnDef<AuditLog>[] = [
   {
@@ -75,6 +70,23 @@ export const columns: ColumnDef<AuditLog>[] = [
     header: 'Prediction',
     cell: (cell) => {
       return <code>{JSON.stringify(cell.getValue())}</code>;
+    },
+  },
+  {
+    accessorKey: 'created_at',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant={'ghost'}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Created At
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: (cell) => {
+      return formatDate(cell.getValue() as string);
     },
   },
 ];
@@ -124,7 +136,7 @@ export function AuditLogTable() {
             }
           >
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select a Data Type" />
+              <SelectValue placeholder="Select a Model Type" />
             </SelectTrigger>
             <SelectContent className={'bg-neutral-800'}>
               <SelectGroup>
@@ -154,7 +166,7 @@ export function AuditLogTable() {
           </Select>
 
           <Button onClick={resetFilters} variant="outline">
-            Reset Filters
+            Reset
           </Button>
         </div>
         <DropdownMenu>
@@ -233,7 +245,7 @@ export function AuditLogTable() {
         </Table>
       </div>
       <div className={'flex flex-row justify-between py-4'}>
-        <span className="mx-2">
+        <span className="mx-2 font-light text-neutral-300 text-sm">
           Page {table.getState().pagination.pageIndex + 1} of{' '}
           {table.getPageCount()}
         </span>

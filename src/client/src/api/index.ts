@@ -42,6 +42,7 @@ export type AuditLog = {
     price?: number;
     direction?: Direction;
   };
+  created_at: string;
 };
 
 export type ClsMetric = {
