@@ -6,7 +6,6 @@ from src.api.models.audit_log import AuditLog
 from src.api.models.model_metric import ModelMetric
 from src.api.services import audit_log_service, metrics_service
 from src.model.helpers.common import ModelType
-from src.model.helpers.mlflow import mlflow_authenticate, get_model_version, Stage
 from src.model.helpers.production_models_versions import get_production_model_version
 from src.utils.data import DataType
 from src.utils.logger import get_logger
