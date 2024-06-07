@@ -7,6 +7,14 @@ on:
       - completed
   workflow_dispatch:
 
+env:
+  MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+  MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
+  MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
+  DAGSHUB_USER_TOKEN: ${{ secrets.DAGSHUB_USER_TOKEN }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+
 jobs:
   train:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
