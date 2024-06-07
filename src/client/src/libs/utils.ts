@@ -6,16 +6,17 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const formatDate = (date: string) => {
-  return new Intl.DateTimeFormat('en-GB', {
-    day: '2-digit',
-    month: '2-digit',
+  return new Intl.DateTimeFormat('de-DE', {
+    day: 'numeric',
+    month: 'numeric',
     year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    timeZone: 'UTC', // Ensure consistent time zone
-    hour12: false, // Use 24-hour time format
-  }).format(new Date(date));
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: false,
+  })
+    .format(new Date(date))
+    .replaceAll('/', '.');
 };
 
 export const formatCurrency = (value: number) => {
