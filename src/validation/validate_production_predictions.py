@@ -84,7 +84,7 @@ def validate_regression_predictions(data: pd.DataFrame, predictions: list[AuditL
             logger.info(f"Prediction for date {date} not found")
             continue
 
-        actual_price = row["target"].values[0]
+        actual_price = row["close"].values[0]
 
         actuals.append(actual_price)
         preds.append(predicted_price)
