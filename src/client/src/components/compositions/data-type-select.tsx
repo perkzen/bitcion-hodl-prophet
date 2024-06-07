@@ -10,6 +10,12 @@ import {
 } from '@/components/ui/select';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import {
+  DIRECTION_FORECAST_QUERY_KEY,
+  PRICE_FORECAST_QUERY_KEY,
+  PRICE_HISTORY_QUERY_KEY,
+} from '@/api/hooks';
 
 const DataTypeSelect = () => {
   const router = useRouter();
@@ -18,13 +24,18 @@ const DataTypeSelect = () => {
   const [selected, setSelected] = useState<string>(
     params.get('data') || 'daily'
   );
+
+  const queryClient = useQueryClient();
+
   const handleSelect = useCallback(
-    (value: string) => {
+    async (value: string) => {
       setSelected(value);
       router.push(`?data=${value}`, {});
-      router.refresh();
+      await queryClient.invalidateQueries({
+        queryKey: [value],
+      });
     },
-    [router]
+    [queryClient, router]
   );
 
   useEffect(() => {
@@ -38,7 +49,7 @@ const DataTypeSelect = () => {
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Select a interval" />
       </SelectTrigger>
-      <SelectContent className={'bg-neutral-800 text-white'}>
+      <SelectContent className={'bg-neutral-800'}>
         <SelectGroup>
           <SelectLabel>Data interval</SelectLabel>
           <SelectItem value="hourly">Hourly</SelectItem>

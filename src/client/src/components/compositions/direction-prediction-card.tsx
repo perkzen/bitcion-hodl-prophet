@@ -24,11 +24,6 @@ const DirectionPredictionCard = ({
     [Direction.DOWN]: 'text-red-500',
   };
 
-  const cardBorderClasses = {
-    [Direction.UP]: 'border-green-500',
-    [Direction.DOWN]: 'border-red-500',
-  };
-
   const TrendingIcon = () => {
     if (direction === Direction.UP) {
       return <TrendingUp className={classes[Direction.UP]} />;
@@ -38,10 +33,7 @@ const DirectionPredictionCard = ({
 
   return (
     <Card
-      className={cn(
-        'w-[350px] bg-neutral-800 text-white',
-        cardBorderClasses[direction]
-      )}
+      className={cn('w-[350px] border-[#F6931D] bg-neutral-800 text-white')}
     >
       <CardHeader>
         <CardTitle>Bitcoin Trend Prediction</CardTitle>

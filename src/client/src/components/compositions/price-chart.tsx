@@ -11,9 +11,8 @@ import {
 } from 'recharts';
 import React, { useMemo } from 'react';
 import { DataType, PriceData } from '@/api';
-import { formatDate } from '@/libs/utils';
+import { formatCurrency, formatDate } from '@/libs/utils';
 import useIsMobile from '@/libs/use-is-mobile';
-import { usePriceForecast, usePriceHistory } from '@/api/hooks';
 
 type ChartProps = {
   data: PriceData[];
@@ -62,8 +61,25 @@ const PriceChart = ({ data, dataType }: ChartProps) => {
             position="insideLeft"
           />
         </YAxis>
-        <Tooltip />
-        {/*<Legend />*/}
+        <Tooltip
+          content={(props) => {
+            const y = props.payload?.[0]?.value;
+            const x = props.payload?.[0]?.payload?.date;
+
+            if (!y || !x) return null;
+
+            return (
+              <div
+                className={
+                  'bg-neutral-800 border border-[#F6931D] px-4 py-2 shadow rounded-md'
+                }
+              >
+                <div>{formatCurrency(Number(y))}</div>
+                <div>{formatDate(x)}</div>
+              </div>
+            );
+          }}
+        />
         <defs>
           <linearGradient id="color" x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor="#F6931D" stopOpacity={0.3} />

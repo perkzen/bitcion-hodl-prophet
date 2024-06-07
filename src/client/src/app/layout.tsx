@@ -22,7 +22,9 @@ export default function RootLayout({
       <body className={cn(inter.className, 'bg-neutral-800')}>
         <Providers>
           <Navbar />
-          {children}
+          <main className="flex w-full flex-col gap-8 sm:gap-20 px-2 sm:px-24 py-8">
+            {children}
+          </main>
         </Providers>
       </body>
     </html>

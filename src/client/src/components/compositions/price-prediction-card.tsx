@@ -21,29 +21,9 @@ const PricePredictionCard = ({
   price,
   lastPrice,
 }: PricePredictionCardProps) => {
-  const classes = {
-    [Direction.UP]: 'text-green-500',
-    [Direction.DOWN]: 'text-red-500',
-  };
-
-  const cardBorderClasses = {
-    [Direction.UP]: 'border-green-500',
-    [Direction.DOWN]: 'border-red-500',
-  };
-
-  const TrendingIcon = () => {
-    if (price > lastPrice) {
-      return <TrendingUp className={classes[Direction.UP]} />;
-    }
-    return <TrendingDown className={classes[Direction.DOWN]} />;
-  };
-
   return (
     <Card
-      className={cn(
-        'w-[350px] bg-neutral-800 text-white',
-        cardBorderClasses[price > lastPrice ? Direction.UP : Direction.DOWN]
-      )}
+      className={cn('w-[350px] border-[#F6931D] bg-neutral-800 text-white')}
     >
       <CardHeader>
         <CardTitle>Bitcoin Price Prediction</CardTitle>
@@ -52,8 +32,9 @@ const PricePredictionCard = ({
         </CardDescription>
       </CardHeader>
       <CardContent className={'flex flex-row gap-4'}>
-        <span>{formatCurrency(price)}</span>
-        <TrendingIcon />
+        <span className={price > lastPrice ? 'text-green-500' : 'text-red-500'}>
+          {formatCurrency(price)}
+        </span>
       </CardContent>
     </Card>
   );

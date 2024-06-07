@@ -1,7 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import {
   DataType,
+  getAuditLogs,
   getDirectionForecast,
+  getMetrics,
   getPriceForecast,
   getPriceHistory,
 } from '@/api/index';
@@ -27,4 +29,21 @@ export const usePriceHistory = (data: DataType) =>
     initialData: [],
     queryKey: [PRICE_HISTORY_QUERY_KEY, data],
     queryFn: () => getPriceHistory(data),
+  });
+
+export const AUDIT_LOG_QUERY_KEY = 'audit-log';
+export const useAuditLog = () =>
+  useQuery({
+    initialData: [],
+    queryKey: [AUDIT_LOG_QUERY_KEY],
+    queryFn: getAuditLogs,
+  });
+
+export const METRIC_QUERY_KEY = 'metric';
+
+export const useMetric = () =>
+  useQuery({
+    initialData: [],
+    queryKey: [METRIC_QUERY_KEY],
+    queryFn: getMetrics,
   });

@@ -14,7 +14,9 @@ const Navbar = () => {
         }}
       >
         <Image src={Bitcoin} alt={'Bitcoin'} width={48} height={48} />
-        <h1 className="text-2xl font-bold">Bitcoin Hodl Prophet</h1>
+        <h1 className="text-2xl font-bold hidden sm:block">
+          Bitcoin Hodl Prophet
+        </h1>
       </Link>
 
       <div className={'flex flex-row gap-4 items-center'}>
@@ -22,7 +24,7 @@ const Navbar = () => {
           <DataTypeSelect />
         </Suspense>
         <Link
-          className={'cursor-pointer text-lg'}
+          className={'cursor-pointer'}
           href={{
             pathname: '/dashboard',
           }}
