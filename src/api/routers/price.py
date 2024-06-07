@@ -16,5 +16,5 @@ def get_latest_btc_price(data_type: DataType):
     elif data_type == DataType.HOURLY:
         n = 24
 
-    data = btc_service.get_last_n_entries(n, data_type)
+    data = btc_service.get_price_history(n, data_type)
     return data.to_dict(orient="records")

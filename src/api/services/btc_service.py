@@ -1,4 +1,5 @@
 import pandas as pd
+import yfinance as yf
 from src.utils.data import DataType
 
 options = {
@@ -12,17 +13,20 @@ options = {
     }
 }
 
+btc = yf.Ticker("BTC-USD")
 
-def get_last_n_entries(n: int, data_type: DataType) -> pd.DataFrame:
-    csv_path = f"https://dagshub.com/perkzen/bitcoin-hodl-prophet/raw/main/data/processed/btc_price_{data_type.value}.csv"
 
-    btc_hist = pd.read_csv(csv_path)
-    btc_hist["date"] = pd.to_datetime(btc_hist["date"])
+def get_price_history(n: int, data_type: DataType) -> pd.DataFrame:
+    btc_hist = btc.history(period=options[data_type.value]["period"], interval=options[data_type.value]["interval"])
 
-    # move date to last column
-    btc_hist = btc_hist[[col for col in btc_hist.columns if col != "date"] + ["date"]]
+    features = ["open", "high", "low", "close", "volume"]
 
-    numeric_cols = btc_hist.select_dtypes(include="number").columns
-    btc_hist[numeric_cols] = btc_hist[numeric_cols].round(2)
+    # col to lower case
+    btc_hist.columns = btc_hist.columns.str.lower()
+
+    btc_hist = btc_hist[features]
+
+    # use date from index
+    btc_hist["date"] = btc_hist.index
 
     return btc_hist.tail(n)

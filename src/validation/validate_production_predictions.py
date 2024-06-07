@@ -4,7 +4,7 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.metrics import mean_absolute_error, mean_squared_error, explained_variance_score, accuracy_score
 from src.api.models.audit_log import AuditLog
 from src.api.models.model_metric import ModelMetric
-from src.api.services import audit_log_service, metris_service
+from src.api.services import audit_log_service, metrics_service
 from src.utils.logger import get_logger
 
 
@@ -63,8 +63,9 @@ def validate_classification_predictions(data: pd.DataFrame, predictions: list[Au
     logger.info(f"Recall: {recall:.2f}")
     logger.info(f"F1 Score: {f1:.2f}")
 
-    metris_service.save(ModelMetric(model_type="cls", data_type="hourly", model_version="1.0",
-                                    metrics={"accuracy": accuracy, "precision": precision, "recall": recall, "f1": f1}))
+    metrics_service.save(ModelMetric(model_type="cls", data_type="hourly", model_version="1.0",
+                                     metrics={"accuracy": accuracy, "precision": precision, "recall": recall,
+                                              "f1": f1}))
 
 
 def validate_regression_predictions(data: pd.DataFrame, predictions: list[AuditLog]) -> None:
@@ -96,8 +97,8 @@ def validate_regression_predictions(data: pd.DataFrame, predictions: list[AuditL
     logger.info(f"Mean Squared Error (MSE): {mse:.2f}")
     logger.info(f"Explained Variance Score (EVS): {evs:.2f}")
 
-    metris_service.save(ModelMetric(model_type="reg", data_type="hourly", model_version="1.0",
-                                    metrics={"mae": mae, "mse": mse, "evs": evs}))
+    metrics_service.save(ModelMetric(model_type="reg", data_type="hourly", model_version="1.0",
+                                     metrics={"mae": mae, "mse": mse, "evs": evs}))
 
 
 def main() -> None:

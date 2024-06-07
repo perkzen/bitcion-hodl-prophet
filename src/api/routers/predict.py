@@ -2,8 +2,9 @@ from fastapi import APIRouter, BackgroundTasks
 from src.api.models.audit_log import AuditLog
 from src.api.services import forecast_service, audit_log_service
 from src.model.helpers.common import ModelType
+from src.model.helpers.production_models_versions import daily_price_model_version, hourly_price_model_version, \
+    daily_direction_model_version, hourly_direction_model_version
 from src.utils.data import DataType
-from src.model.helpers.mlflow import get_model_version, Stage, mlflow_authenticate
 from src.utils.logger import get_logger
 
 router = APIRouter(
@@ -11,16 +12,6 @@ router = APIRouter(
     prefix="/predict"
 )
 
-client = mlflow_authenticate()
-
-daily_price_model_version = get_model_version(client=client, data_type=DataType.DAILY.value, model_name="model.onnx",
-                                              stage=Stage.PRODUCTION)
-hourly_price_model_version = get_model_version(client=client, data_type=DataType.HOURLY.value, model_name="model.onnx",
-                                               stage=Stage.PRODUCTION)
-daily_direction_model_version = get_model_version(client=client, data_type=DataType.DAILY.value,
-                                                  model_name="cls_model.onnx", stage=Stage.PRODUCTION)
-hourly_direction_model_version = get_model_version(client=client, data_type=DataType.HOURLY.value,
-                                                   model_name="cls_model.onnx", stage=Stage.PRODUCTION)
 logger = get_logger()
 
 
