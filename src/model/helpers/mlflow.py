@@ -135,3 +135,26 @@ def get_model_version(client: MlflowClient, model_name: str, data_type: str, sta
     model_path = f"models/{data_type}/{model_name}"
     model_version = client.get_model_version_by_alias(model_path, stage.value).version
     return model_version
+
+
+def download_model_registry() -> dict[str, str]:
+    client = mlflow_authenticate()
+
+    download_production_models(client, "model.onnx", "minmax.pkl", "daily")
+    download_production_models(client, "model.onnx", "minmax.pkl", "hourly")
+
+    download_production_models(client, "cls_model.onnx", "cls_minmax.pkl", "daily")
+    download_production_models(client, "cls_model.onnx", "cls_minmax.pkl", "hourly")
+
+    # get model versions
+    daily_price_model_version = get_model_version(client, "model.onnx", "daily", Stage.PRODUCTION)
+    hourly_price_model_version = get_model_version(client, "model.onnx", "hourly", Stage.PRODUCTION)
+    daily_direction_model_version = get_model_version(client, "cls_model.onnx", "daily", Stage.PRODUCTION)
+    hourly_direction_model_version = get_model_version(client, "cls_model.onnx", "hourly", Stage.PRODUCTION)
+
+    return {
+        "daily_price_model_version": daily_price_model_version,
+        "hourly_price_model_version": hourly_price_model_version,
+        "daily_direction_model_version": daily_direction_model_version,
+        "hourly_direction_model_version": hourly_direction_model_version
+    }
