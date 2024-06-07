@@ -1,7 +1,8 @@
 from src.api.db.client import db
 from src.api.models.model_metric import ModelMetric
-from src.model.helpers.production_models_versions import daily_price_model_version, daily_direction_model_version, \
-    hourly_price_model_version, hourly_direction_model_version
+from src.model.helpers.common import ModelType
+from src.model.helpers.production_models_versions import get_production_model_version
+from src.utils.data import DataType
 from src.utils.logger import get_logger
 
 _collection = db["model_metrics"]
@@ -19,25 +20,32 @@ def find_all() -> list[ModelMetric]:
     daily_reg_query = {
         "model_type": "reg",
         "data_type": "daily",
-        "model_version": daily_price_model_version
+        "model_version": get_production_model_version(DataType.DAILY, ModelType.REGRESSION)
     }
     daily_cls_query = {
         "model_type": "cls",
         "data_type": "daily",
-        "model_version": daily_direction_model_version
+        "model_version": get_production_model_version(DataType.DAILY, ModelType.CLASSIFICATION)
     }
 
     hourly_reg_query = {
         "model_type": "reg",
         "data_type": "hourly",
-        "model_version": hourly_price_model_version
+        "model_version": get_production_model_version(DataType.HOURLY, ModelType.REGRESSION)
     }
 
     hourly_cls_query = {
         "model_type": "cls",
         "data_type": "hourly",
-        "model_version": hourly_direction_model_version
+        "model_version": get_production_model_version(DataType.HOURLY, ModelType.CLASSIFICATION)
     }
 
-    return [ModelMetric(**metric) for metric in
-            _collection.find({"$or": [daily_reg_query, daily_cls_query, hourly_reg_query, hourly_cls_query]})]
+    daily_reg_metrics = _collection.find(daily_reg_query)
+    daily_cls_metrics = _collection.find(daily_cls_query)
+    hourly_reg_metrics = _collection.find(hourly_reg_query)
+    hourly_cls_metrics = _collection.find(hourly_cls_query)
+
+    return [ModelMetric(**metric) for metric in daily_reg_metrics] + \
+        [ModelMetric(**metric) for metric in daily_cls_metrics] + \
+        [ModelMetric(**metric) for metric in hourly_reg_metrics] + \
+        [ModelMetric(**metric) for metric in hourly_cls_metrics]

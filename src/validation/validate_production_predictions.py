@@ -5,6 +5,10 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, explained_v
 from src.api.models.audit_log import AuditLog
 from src.api.models.model_metric import ModelMetric
 from src.api.services import audit_log_service, metrics_service
+from src.model.helpers.common import ModelType
+from src.model.helpers.mlflow import mlflow_authenticate, get_model_version, Stage
+from src.model.helpers.production_models_versions import get_production_model_version
+from src.utils.data import DataType
 from src.utils.logger import get_logger
 
 
@@ -32,7 +36,7 @@ def valid_args(args) -> list[str]:
 logger = get_logger()
 
 
-def validate_classification_predictions(data: pd.DataFrame, predictions: list[AuditLog]) -> None:
+def validate_classification_predictions(data: pd.DataFrame, predictions: list[AuditLog], model_version: str) -> None:
     actuals = []
     preds = []
 
@@ -45,7 +49,6 @@ def validate_classification_predictions(data: pd.DataFrame, predictions: list[Au
 
         row = data.loc[data.index == date]
         if row.empty:
-            logger.info(f"Prediction for date {date} not found")
             continue
 
         actual = row["target"].values[0]
@@ -54,21 +57,22 @@ def validate_classification_predictions(data: pd.DataFrame, predictions: list[Au
         preds.append(prediction)
 
     accuracy = accuracy_score(actuals, preds)
-    precision = precision_score(actuals, preds)
-    recall = recall_score(actuals, preds)
-    f1 = f1_score(actuals, preds)
+    precision = precision_score(actuals, preds, zero_division=1)
+    recall = recall_score(actuals, preds, zero_division=1)
+    f1 = f1_score(actuals, preds, zero_division=1)
 
     logger.info(f"Accuracy: {accuracy:.2f}")
     logger.info(f"Precision: {precision:.2f}")
     logger.info(f"Recall: {recall:.2f}")
     logger.info(f"F1 Score: {f1:.2f}")
 
-    metrics_service.save(ModelMetric(model_type="cls", data_type="hourly", model_version="1.0",
+    metrics_service.save(ModelMetric(model_type="cls", data_type="hourly",
+                                     model_version=model_version,
                                      metrics={"accuracy": accuracy, "precision": precision, "recall": recall,
                                               "f1": f1}))
 
 
-def validate_regression_predictions(data: pd.DataFrame, predictions: list[AuditLog]) -> None:
+def validate_regression_predictions(data: pd.DataFrame, predictions: list[AuditLog], model_version: str) -> None:
     actuals = []
     preds = []
 
@@ -81,7 +85,6 @@ def validate_regression_predictions(data: pd.DataFrame, predictions: list[AuditL
         test_date = "2024-06-05 00:00:00+00:00"
         row = data.loc[data.index == test_date]
         if row.empty:
-            logger.info(f"Prediction for date {date} not found")
             continue
 
         actual_price = row["close"].values[0]
@@ -97,7 +100,7 @@ def validate_regression_predictions(data: pd.DataFrame, predictions: list[AuditL
     logger.info(f"Mean Squared Error (MSE): {mse:.2f}")
     logger.info(f"Explained Variance Score (EVS): {evs:.2f}")
 
-    metrics_service.save(ModelMetric(model_type="reg", data_type="hourly", model_version="1.0",
+    metrics_service.save(ModelMetric(model_type="reg", data_type="hourly", model_version=model_version,
                                      metrics={"mae": mae, "mse": mse, "evs": evs}))
 
 
@@ -119,9 +122,12 @@ def main() -> None:
 
     match args.model:
         case "cls":
-            validate_classification_predictions(btc_hist, predictions)
+            validate_classification_predictions(btc_hist, predictions,
+                                                get_production_model_version(DataType(args.type),
+                                                                             ModelType(args.model)))
         case "reg":
-            validate_regression_predictions(btc_hist, predictions)
+            validate_regression_predictions(btc_hist, predictions,
+                                            get_production_model_version(DataType(args.type), ModelType(args.model)))
 
 
 if __name__ == '__main__':

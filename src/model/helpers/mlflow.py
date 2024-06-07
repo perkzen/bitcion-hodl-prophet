@@ -126,12 +126,9 @@ def demote_model(client: MlflowClient, model_name: str, minmax_name: str, data_t
     production_minmax = client.get_model_version_by_alias(minmax_name, Stage.PRODUCTION.value)
 
     # Demote production model to development
-    client.set_registered_model_alias(name=model_name, alias=Stage.ARCHIVE.value, version=production_model.version)
-    client.set_registered_model_alias(name=minmax_name, alias=Stage.ARCHIVE.value,
+    client.set_registered_model_alias(name=model_name, alias=Stage.STAGING.value, version=production_model.version)
+    client.set_registered_model_alias(name=minmax_name, alias=Stage.STAGING.value,
                                       version=production_minmax.version)
-
-    client.delete_registered_model_alias(name=model_name, alias=Stage.PRODUCTION.value)
-    client.delete_registered_model_alias(name=minmax_name, alias=Stage.PRODUCTION.value)
 
 
 def get_model_version(client: MlflowClient, model_name: str, data_type: str, stage: Stage) -> str:
