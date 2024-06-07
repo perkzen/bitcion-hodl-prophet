@@ -54,5 +54,5 @@ jobs:
 
       - name: Evaluate model (daily)
         run: |
-          poetry run poe evaluate --type daily --model reg
-          poetry run poe evaluate --type daily --model cls
+          poetry run poe eval --type daily --model reg
+          poetry run poe eval --type daily --model cls

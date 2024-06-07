@@ -54,5 +54,5 @@ jobs:
 
       - name: Evaluate model (hourly)
         run: |
-          poetry run poe evaluate --type hourly --model reg
-          poetry run poe evaluate --type hourly --model cls
+          poetry run poe eval --type hourly --model reg
+          poetry run poe eval --type hourly --model cls
